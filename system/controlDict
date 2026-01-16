@@ -1,0 +1,112 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2412                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     chtMultiRegionFoam;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         300; //3000
+
+deltaT          0.1;
+
+writeControl    adjustableRunTime;
+
+writeInterval   5;
+
+purgeWrite      0;
+
+writeFormat     binary;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+
+maxCo           1.0;
+
+maxDi           100.0;
+
+
+adjustTimeStep  on; // Iden CHT Shell and Tubes Heat Exchanger
+
+
+functions
+{
+
+    #includeFunc "Probes_Solid"
+  
+    HeatFlux_water
+    {
+        type            wallHeatFlux;
+        libs            (fieldFunctionObjects);
+        patches         (water_to_solid);
+        region          water;
+        qr              qr;
+        executeControl  writeTime;
+        executeInterval 1;
+        writeControl    writeTime;
+        writeInterval   1;
+    }
+
+    HeatFlux_solid
+    {
+        type            wallHeatFlux;
+        libs            (fieldFunctionObjects);
+        patches         (solid_to_water);
+        region          solid;
+        qr              qr;
+        executeControl  writeTime;
+        executeInterval 1;
+        writeControl    writeTime;
+        writeInterval   1;
+    }
+
+    
+    #includeFunc  T_Average_inlet
+    #includeFunc  T_Average_outlet
+    
+
+
+	water_residuals
+	{
+        type            solverInfo;
+        libs            (utilityFunctionObjects);
+        fields          (".*");
+		region	        water;
+	}
+
+	solid_residuals
+	{
+        type            solverInfo;
+        libs            (utilityFunctionObjects);
+        fields          (".*");
+		region	        solid;
+	}
+}
+
+
+// ************************************************************************* //

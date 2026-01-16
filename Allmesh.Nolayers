@@ -1,0 +1,42 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # Run from this directory
+
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+
+# Create the initial block mesh, extract feature and decompose
+runApplication blockMesh
+
+rm -rf dynamicCode
+
+runApplication surfaceFeatureExtract
+
+runApplication decomposePar
+#runApplication surfaceFeatures
+
+# Run snappy without layers
+
+
+
+foamDictionary system/snappyHexMeshDict -entry castellatedMesh -set on
+foamDictionary system/snappyHexMeshDict -entry snap -set on
+foamDictionary system/snappyHexMeshDict -entry addLayers -set off
+runParallel snappyHexMesh -overwrite
+
+runParallel splitMeshRegions -cellZones -overwrite
+
+runApplication reconstructParMesh -allRegions -constant
+
+
+rm -rf processor*
+
+rm -rf constant/polyMesh
+
+mv log.decomposePar log.decomposePar_Mesh
+mv log.reconstructParMesh log.reconstructParMesh_Mesh
+
+runApplication checkMesh -allRegions
+
+

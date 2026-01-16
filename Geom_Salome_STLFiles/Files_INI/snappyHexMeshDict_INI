@@ -1,0 +1,165 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2412                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version         2.0;
+    format          ascii;
+    class           dictionary;
+    object          snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#includeEtc "caseDicts/mesh/generation/snappyHexMeshDict.cfg"
+
+castellatedMesh on;
+snap            on;
+addLayers       on;
+
+geometry
+{
+    solid.stl
+    {
+        type            triSurfaceMesh;
+        name            solid;
+        regions
+        {
+            bottom   {name    bottom;}
+            top      {name    top;}
+            minX     {name    minX;}
+            minY     {name    minY;}
+            maxX     {name    maxX;}
+            maxY     {name    maxY;}
+        }
+    }
+    water.stl
+    {
+        type            triSurfaceMesh;
+        name            water;
+        regions
+        {
+            inlet    {name    inlet;}
+            outlet   {name    outlet;}
+        }
+    }
+    water_to_solid.stl
+    {
+        type            triSurfaceMesh;
+        name            water_to_solid;
+    }
+}
+
+castellatedMeshControls
+{
+    nCellsBetweenLevels 5;    
+    allowFreeStandingZoneFaces true;   
+    
+    features
+    (
+       {file "solid.extendedFeatureEdgeMesh"; level 0;} 
+       {file "water.extendedFeatureEdgeMesh"; level 0;} 
+       {file "water_to_solid.extendedFeatureEdgeMesh"; level 3;} 
+    );
+    
+    refinementSurfaces
+    {
+        solid
+        {
+            level           ( 0 0 );
+            regions
+            {
+                bottom    { level ( 0 3 ); patchInfo { type   patch; } }
+                top       { level ( 2 2 ); patchInfo { type   patch; } }
+                minX      { level ( 0 0 ); patchInfo { type   patch; } }
+                minY      { level ( 0 0 ); patchInfo { type   patch; } }
+                maxX      { level ( 0 0 ); patchInfo { type   patch; } }
+                maxY      { level ( 0 0 ); patchInfo { type   patch; } }
+            }
+        }
+        water
+        {
+            level           ( 0 0 );
+            regions
+            {
+                inlet     { level ( 0 0 ); patchInfo { type   patch; } }
+                outlet    { level ( 0 0 ); patchInfo { type   patch; } }
+            }
+        }
+        water_to_solid
+        {
+            level           ( 3 3 );
+        }
+    }
+
+
+    refinementRegions
+    {
+    }
+    
+
+    nCellsBetweenLevels 2;
+
+    resolveFeatureAngle 15;
+
+//    locationInMesh  ( 0.0001 0.0001 0.0001 );
+
+    locationsInMesh
+    (
+        ((0.0001 0.0001 0.0001) solid)
+        ((0.02 0.05 0.0001) water)
+    );
+
+}
+
+snapControls
+{
+    implicitFeatureSnap    true;
+}
+
+
+addLayersControls
+{
+    layers
+    {
+        top
+        {
+            nSurfaceLayers  4;
+        }
+        
+        water_to_solid
+        {
+            nSurfaceLayers  4;
+        }        
+
+        solid_to_water
+        {
+            nSurfaceLayers  4;
+        }        
+    }
+
+    relativeSizes       true; // was true 
+
+    expansionRatio 1.2; 
+    firstLayerThickness 0.2; //was 0.00016 
+    minThickness 0.000025; //was 0.00008 
+ 
+}
+
+meshQualityControls
+{
+    #include "meshQualityDict"
+
+    relaxed
+    {
+        maxNonOrtho 75;
+    }
+}
+
+mergeTolerance  1e-06;
+
+
+// ************************************************************************* //

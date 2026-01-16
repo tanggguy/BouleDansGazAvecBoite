@@ -1,0 +1,30 @@
+#!/bin/sh
+
+cd ${0%/*} || exit 1
+
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+echo "Salome...."
+$HOME/Logiciels/Salome/SALOME-9.15.0/binsalome -t __MAIN__Geom_salome.py
+echo "********************************************************************"
+
+# Exemple d'utilisation de la commande sed directement depuis le terminal 
+# ou en script bach
+#sed -i 's/solid/solid minXsolid/g' STL_Files/minXsolid.stl
+
+cat ./../constant/triSurface/minXsolid.stl ./../constant/triSurface/maxXsolid.stl ./../constant/triSurface/minYsolid.stl ./../constant/triSurface/maxYsolid.stl  ./../constant/triSurface/bottomsolid.stl ./../constant/triSurface/topsolid.stl > ./../constant/triSurface/solid.stl
+
+
+rm ./../constant/triSurface/minXsolid.stl
+rm ./../constant/triSurface/maxXsolid.stl
+rm ./../constant/triSurface/minYsolid.stl
+rm ./../constant/triSurface/maxYsolid.stl 
+rm ./../constant/triSurface/bottomsolid.stl
+rm ./../constant/triSurface/topsolid.stl
+
+cat ./../constant/triSurface/inletwater.stl ./../constant/triSurface/outletwater.stl > ./../constant/triSurface/water.stl
+
+rm ./../constant/triSurface/inletwater.stl
+rm ./../constant/triSurface/outletwater.stl
+
+

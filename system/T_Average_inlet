@@ -1,0 +1,21 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2406                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+-------------------------------------------------------------------------------
+Description
+    Calculates the average value of one or more fields on a patch.
+
+\*---------------------------------------------------------------------------*/
+
+name    inlet;
+region  water;
+fields  (T);
+
+  
+operation areaAverage;
+#includeEtc "caseDicts/postProcessing/surfaceFieldValue/patch.cfg"
+
+// ************************************************************************* //

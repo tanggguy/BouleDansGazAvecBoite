@@ -1,0 +1,156 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.x                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      changeDictionaryDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+U
+{
+    internalField   uniform (0 0 0);
+
+    boundaryField
+    {
+
+        #includeEtc "caseDicts/setConstraintTypes"
+
+        inletwater
+        {
+            type            fixedValue;
+            value           uniform ( 0 0 0.1 );
+        }
+
+        outletwater
+        {
+            type            inletOutlet;
+            inletValue      uniform ( 0 0 0 );
+            value           uniform ( 0 0 -0.1 );
+        }
+        backwater
+        {
+            type            zeroGradient;
+            value           uniform ( 0 0 0 );
+        }
+
+        frontwater
+        {
+            type            zeroGradient;
+            value           uniform ( 0 0 0 );
+        }
+        ".*"
+        {
+            type            noSlip;
+        }
+        
+        "water_to_.*"
+        {
+            type            noSlip;
+        }
+    }
+}
+
+T
+{
+
+    internalField   uniform 293.15;
+
+    boundaryField
+    {
+        #includeEtc "caseDicts/setConstraintTypes"
+
+        ".*"
+        {
+        	type            zeroGradient;
+        	value           uniform 293.15;
+        }
+        inletwater
+        {
+            type                fixedValue;
+            value               uniform 293.15;
+        }
+
+        outletwater
+        {
+        	type            zeroGradient;
+        	value           uniform 293.15;
+        }
+
+        backwater
+        {
+                type            zeroGradient;
+        	value           uniform 293.15;
+        }
+
+        frontwater
+        {
+                type            zeroGradient;
+        	value           uniform 293.15;
+        }
+
+        "water_to_.*"
+        {
+            type            compressible::turbulentTemperatureCoupledBaffleMixed;
+            value           uniform 300;
+            Tnbr            T;
+            kappaMethod     fluidThermo;
+        }
+    }
+}
+
+
+p_rgh
+{
+    internalField   uniform 1e5;
+
+    boundaryField
+    {
+        #includeEtc "caseDicts/setConstraintTypes"
+        ".*"
+        {
+            type            fixedFluxPressure;
+            value           uniform 1e5;
+        }
+
+        outletwater
+        {
+            type            fixedValue;
+            value           $internalField;
+        }
+    }
+}
+
+p
+{
+    internalField   uniform 1e5;
+
+    boundaryField
+    {
+
+        #includeEtc "caseDicts/setConstraintTypes"
+
+        ".*"
+        {
+            type            calculated;
+            value           uniform 1e5;
+        }
+
+        outletwater
+        {
+            type            calculated;
+            value           uniform 1e5;
+        }
+
+    }
+}
+
+// ************************************************************************* //

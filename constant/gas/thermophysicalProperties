@@ -1,0 +1,53 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  7
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant/water";
+    object      thermophysicalProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+thermoType
+{
+    type            heRhoThermo;
+    mixture         pureMixture;
+    transport       const;
+    thermo          hConst;
+    equationOfState rhoConst;
+    specie          specie;
+    energy          sensibleEnthalpy;
+}
+
+mixture
+{
+    // Water
+
+    specie
+    {
+        molWeight       18;
+    }
+    equationOfState
+    {
+        rho             1000;   // [kg/m^3] (ini 1000). Evolution en focntion de T dans COMSOL
+    }
+    thermodynamics
+    {
+        Cp              4181;   // [J/(kg*K)] Capacité thermqiue à pression consante. Evolution en fonction de T dans COMSOL
+        Hf              0;
+    }
+    transport
+    {
+        mu              0.001;    //  [Pa * s] [1 -1 -1 0 0 0 0] (initalement 959e-6). Evolution en fonction de T dans COMSOL
+        Pr              6.62;     //  Pr = (mu * Cp) / kappa. kappa : conductivité thermique [W/(m*K)]; Valeur cohérente avec les données eau de COMSOL
+    }
+}
+
+// ************************************************************************* //
