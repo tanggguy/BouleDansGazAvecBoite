@@ -26,6 +26,12 @@ sys.path.append( Def_Geometrie_dir )
 from importlib import reload
 
 from Parametres_geo_maillage import *
+# GasCote = 0.1                     # [m]
+# R_sphere = 0.03                     # [m]
+# EpaisseurBox = 0.01                  # [m]
+
+# Center = BoiteCote/2
+
 from sed_function import sed
 
 O = geompy.MakeVertex(0, 0, 0)
@@ -33,123 +39,298 @@ OX = geompy.MakeVectorDXDYDZ(1, 0, 0)
 OY = geompy.MakeVectorDXDYDZ(0, 1, 0)
 OZ = geompy.MakeVectorDXDYDZ(0, 0, 1)
 
-Boite = geompy.MakeBoxDXDYDZ(BoiteCote, BoiteCote, BoiteCote)
-geomObj_1 = geompy.MakeMarker(0, 0, 0, 1, 0, 0, 0, 1, 0)
-sk = geompy.Sketcher2D()
-sk.addPoint(0.000000, 0.000000)
-sk.addSegmentAbsolute(0.000000, TubeHDroit)
-sk.addArcAbsolute(2*TubeRayonCourb, TubeHDroit)
-sk.addSegmentAbsolute(2*TubeRayonCourb, 0.000000)
-LigneExtrude = sk.wire(geomObj_1)
+#1. gas
+gas = geompy.MakeBoxDXDYDZ(GasCote, GasCote, GasCote)
 
-Cercle = geompy.MakeCircle(None, OY, TubeD/2)
-SectionAExtruder = geompy.MakeFaceWires([Cercle], 1)
+#2. sphere
+sphere = geompy.MakeSphereR(R_sphere)
+geompy.TranslateDXDYDZ(sphere, Center, Center, Center)
 
-Tube = geompy.MakePipe(SectionAExtruder, LigneExtrude)
+#3. box_xmax
+box_xmax = geompy.MakeBoxDXDYDZ(EpaisseurBox, GasCote, GasCote)
+geompy.TranslateDXDYDZ(box_xmax, GasCote, 0, 0)
 
-geompy.TranslateDXDYDZ(Tube, DX, 0, DY)
-
-final = geompy.MakePartition([Boite], [Tube], [], [], geompy.ShapeType["SOLID"], 0, [], 0)
-[solid,water] = geompy.ExtractShapes(final, geompy.ShapeType["SOLID"], True)
-geompy.Rotate(final, OX, 90*math.pi/180.0)
-geompy.TranslateDXDYDZ(final, 0, BoiteCote, 0)
-
-[minXsolid,inletwater,water_to_solid_1,minYsolid,bottomsolid,water_to_solid_2,topsolid,maxYsolid,outletwater,water_to_solid_3,maxXsolid] = geompy.ExtractShapes(final, geompy.ShapeType["FACE"], True)
-
-water_to_solid = geompy.MakeFuseList([water_to_solid_1, water_to_solid_2, water_to_solid_3], True, True)
+#4. box_xmin
+box_xmin = geompy.MakeBoxDXDYDZ(EpaisseurBox, GasCote, GasCote)
+geompy.TranslateDXDYDZ(box_xmin, -EpaisseurBox, 0, 0)
 
 
-geompy.ExportSTL(minXsolid, "../constant/triSurface/minXsolid.stl", True, 5e-05, True)
-sed("solid", "solid minX", "./../constant/triSurface/minXsolid.stl") 
-
-geompy.ExportSTL(maxXsolid, "../constant/triSurface/maxXsolid.stl", True, 5e-05, True)
-sed("solid", "solid maxX", "./../constant/triSurface/maxXsolid.stl") 
-
-geompy.ExportSTL(minYsolid, "../constant/triSurface/minYsolid.stl", True, 5e-05, True)
-sed("solid", "solid minY", "./../constant/triSurface/minYsolid.stl") 
-
-geompy.ExportSTL(maxYsolid, "../constant/triSurface/maxYsolid.stl", True, 5e-05, True)
-sed("solid", "solid maxY", "./../constant/triSurface/maxYsolid.stl") 
-
-geompy.ExportSTL(inletwater, "../constant/triSurface/inletwater.stl", True, 5e-05, True)
-sed("solid", "solid inlet", "./../constant/triSurface/inletwater.stl") 
-
-geompy.ExportSTL(outletwater, "../constant/triSurface/outletwater.stl", True, 5e-05, True)
-sed("solid", "solid outlet", "./../constant/triSurface/outletwater.stl") 
-
-geompy.ExportSTL(bottomsolid, "../constant/triSurface/bottomsolid.stl", True, 5e-05, True)
-sed("solid", "solid bottom", "./../constant/triSurface/bottomsolid.stl") 
-
-geompy.ExportSTL(topsolid, "../constant/triSurface/topsolid.stl", True, 5e-05, True)
-sed("solid", "solid top", "./../constant/triSurface/topsolid.stl") 
-
-geompy.ExportSTL(water_to_solid, "../constant/triSurface/water_to_solid.stl", True, 5e-05, True)
-sed("solid", "solid water_to_solid", "./../constant/triSurface/water_to_solid.stl") 
+## ------------------Partition-------------------------
+objets_a_partitionner = [gas, sphere, box_xmax, box_xmin]
+Geometry_Finale = geompy.MakePartition(objets_a_partitionner, [], [], [], geompy.ShapeType["SOLID"])
 
 
+ggeompy.addToStudy(Geometry_Finale, 'DOMAINE_COMPLET')
 
-geompy.addToStudy(Boite, "Boite")
-geompy.addToStudy(LigneExtrude, "LigneExtrude")
-geompy.addToStudy(SectionAExtruder, "SectionAExtruder")
-geompy.addToStudy(Tube, "Tube")
-geompy.addToStudy(final, "final")
+# =========================================================
+# 5. CREATION DES GROUPES (NOMENCLATURE OPENFOAM)
+# =========================================================
 
-geompy.addToStudyInFather( final, minXsolid, 'minXsolid' )
-geompy.addToStudyInFather( final, maxXsolid, 'maxXsolid' )
-geompy.addToStudyInFather( final, minYsolid, 'minYsolid' )
-geompy.addToStudyInFather( final, maxYsolid, 'maxYsolid' )
-geompy.addToStudyInFather( final, inletwater, 'inletwater' )
-geompy.addToStudyInFather( final, outletwater, 'outletwater' )
-geompy.addToStudyInFather( final, bottomsolid, 'bottomsolid' )
-geompy.addToStudyInFather( final, topsolid, 'topsolid' )
-geompy.addToStudyInFather( final, water_to_solid_1, 'water_to_solid_1' )
-geompy.addToStudyInFather( final, water_to_solid_2, 'water_to_solid_2' )
-geompy.addToStudyInFather( final, water_to_solid_3, 'water_to_solid_3' )
-geompy.addToStudyInFather( final, water_to_solid, 'water_to_solid' )
+# Petite tolérance
+eps = 1e-6 
+
+# --- A. LES VOLUMES (cellZones) ---
+# Noms demandés : gas, sphere, box_xmin, box_xmax
+
+# 1. box_xmin (Mur Gauche)
+g_box_xmin = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["SOLID"])
+ids_xmin = geompy.GetShapesOnBox(Geometry_Finale, -EpaisseurBox-eps, -eps, -eps, eps, GasCote+eps, GasCote+eps, geompy.ShapeType["SOLID"])
+geompy.UnionList(g_box_xmin, ids_xmin)
+geompy.addToStudyInFather(Geometry_Finale, g_box_xmin, 'box_xmin')
+
+# 2. box_xmax (Mur Droit)
+g_box_xmax = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["SOLID"])
+ids_xmax = geompy.GetShapesOnBox(Geometry_Finale, GasCote-eps, -eps, -eps, GasCote+EpaisseurBox+eps, GasCote+eps, GasCote+eps, geompy.ShapeType["SOLID"])
+geompy.UnionList(g_box_xmax, ids_xmax)
+geompy.addToStudyInFather(Geometry_Finale, g_box_xmax, 'box_xmax')
+
+# 3. sphere
+g_sphere = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["SOLID"])
+ids_sphere = geompy.GetShapesOnSphere(Geometry_Finale, geompy.MakeVertex(Center, Center, Center), R_sphere/2.0, geompy.ShapeType["SOLID"])
+geompy.UnionList(g_sphere, ids_sphere)
+geompy.addToStudyInFather(Geometry_Finale, g_sphere, 'sphere')
+
+# 4. gas
+# Tout ce qui est au centre MOINS la sphère
+g_gas = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["SOLID"])
+ids_central = geompy.GetShapesOnBox(Geometry_Finale, -eps, -eps, -eps, GasCote+eps, GasCote+eps, GasCote+eps, geompy.ShapeType["SOLID"])
+ids_gas = list(set(ids_central) - set(ids_sphere))
+geompy.UnionList(g_gas, ids_gas)
+geompy.addToStudyInFather(Geometry_Finale, g_gas, 'gas')
+
+
+# --- B. LES INTERFACES (region1_to_region2) ---
+# Astuce : On cherche les faces partagées.
+# Dans Salome, une face partagée appartient à la partition. 
+# Pour l'identifier, on regarde si elle touche les géométries originales.
+
+# 1. Interface Gas <-> Sphere (gas_to_sphere)
+g_int_gas_sphere = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
+# On cherche les faces qui sont SUR la sphère géométrique d'origine
+ids_int_GS = geompy.GetShapesOnShape(Geometry_Finale, sphere, geompy.ShapeType["FACE"], geompy.GEOM.ST_ON)
+geompy.UnionList(g_int_gas_sphere, ids_int_GS)
+geompy.addToStudyInFather(Geometry_Finale, g_int_gas_sphere, 'gas_to_sphere')
+
+# 2. Interface box_xmin <-> Gas (box_xmin_to_gas)
+g_int_xmin_gas = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
+# C'est le plan X = 0
+ids_int_XG = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(0, 0, 0), eps)
+geompy.UnionList(g_int_xmin_gas, ids_int_XG)
+geompy.addToStudyInFather(Geometry_Finale, g_int_xmin_gas, 'box_xmin_to_gas')
+
+# 3. Interface Gas <-> box_xmax (gas_to_box_xmax)
+g_int_xmax_gas = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
+# C'est le plan X = GasCote
+ids_int_GX = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(GasCote, 0, 0), eps)
+geompy.UnionList(g_int_xmax_gas, ids_int_GX)
+geompy.addToStudyInFather(Geometry_Finale, g_int_xmax_gas, 'gas_to_box_xmax')
+
+
+# --- C. LES PAROIS EXTERNES (Conditions Limites) ---
+
+# 1. Extérieur Gauche (external_box_xmin) -> Pour Température Fixe
+g_ext_xmin = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
+ids_ext_xmin = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(-EpaisseurBox, 0, 0), eps)
+geompy.UnionList(g_ext_xmin, ids_ext_xmin)
+geompy.addToStudyInFather(Geometry_Finale, g_ext_xmin, 'external_box_xmin')
+
+# 2. Extérieur Droit (external_box_xmax) -> Pour Température Fixe
+g_ext_xmax = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
+ids_ext_xmax = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(GasCote+EpaisseurBox, 0, 0), eps)
+geompy.UnionList(g_ext_xmax, ids_ext_xmax)
+geompy.addToStudyInFather(Geometry_Finale, g_ext_xmax, 'external_box_xmax')
+
+# Rafraîchir
+if salome.sg.hasDesktop():
+    salome.sg.updateObjBrowser()
+
+
+# =========================================================
+# 6. EXPORTATION STL POUR OPENFOAM (snappyHexMesh)
+# =========================================================
+
+# 1. Définition du chemin de sortie
+# Attention : os.getcwd() dépend d'où vous lancez Salome. 
+# Si vous lancez le script depuis un fichier, on essaie de se baser dessus, 
+# sinon on suppose que vous êtes à la racine de votre cas OpenFOAM.
+current_dir = os.getcwd()
+# On remonte d'un cran (..) et on va dans constant/triSurface
+output_dir = os.path.join(current_dir, "..", "constant", "triSurface")
+
+# Création du dossier s'il n'existe pas
+if not os.path.exists(output_dir):
+    try:
+        os.makedirs(output_dir)
+        print("Dossier créé :", output_dir)
+    except OSError:
+        print("Erreur : Impossible de créer le dossier. Vérifiez les droits ou le chemin.")
+else:
+    print("Export vers :", output_dir)
+
+# 2. Fonction utilitaire pour exporter
+def export_stl(geom_obj, filename):
+    """
+    Exporte un objet Salome en STL ASCII
+    """
+    filepath = os.path.join(output_dir, filename)
+    # Le 'True' à la fin signifie format ASCII (plus lisible, souvent préféré par OpenFOAM)
+    # Le 'False' ferait du Binaire (fichier plus petit)
+    geompy.ExportSTL(geom_obj, filepath, True)
+    print("  -> Fichier généré : " + filename)
+
+# 3. Export des VOLUMES (Pour les cellZones / Regions)
+# C'est ce qui permettra à snappyHexMesh de savoir où est le gaz et où est le solide
+print("--- Export des Volumes (Regions) ---")
+export_stl(g_gas, "gas.stl")
+export_stl(g_sphere, "sphere.stl")
+export_stl(g_box_xmin, "box_xmin.stl")
+export_stl(g_box_xmax, "box_xmax.stl")
+
+# 4. Export des FACES EXTERNES (Pour les Patches spécifiques)
+# Utile pour forcer des conditions limites précises ou des raffinements locaux
+print("--- Export des Faces (Patches) ---")
+export_stl(g_ext_xmin, "external_box_xmin.stl")
+export_stl(g_ext_xmax, "external_box_xmax.stl")
+
+# Note : On n'exporte généralement pas les faces d'interfaces internes (gas_to_sphere)
+# en STL séparé pour snappyHexMesh, car snappy les recrée automatiquement 
+# là où les volumes gas.stl et sphere.stl se touchent.
+
+print("--- Export terminé avec succès ---")
+
+
+
+# geompy.addToStudy(Boite, "Boite")
+# geompy.addToStudy(LigneExtrude, "LigneExtrude")
+# geompy.addToStudy(SectionAExtruder, "SectionAExtruder")
+# geompy.addToStudy(Tube, "Tube")
+# geompy.addToStudy(final, "final")
+
+# geompy.addToStudyInFather( final, minXsolid, 'minXsolid' )
+# geompy.addToStudyInFather( final, maxXsolid, 'maxXsolid' )
+# geompy.addToStudyInFather( final, minYsolid, 'minYsolid' )
+# geompy.addToStudyInFather( final, maxYsolid, 'maxYsolid' )
+# geompy.addToStudyInFather( final, inletwater, 'inletwater' )
+# geompy.addToStudyInFather( final, outletwater, 'outletwater' )
+# geompy.addToStudyInFather( final, bottomsolid, 'bottomsolid' )
+# geompy.addToStudyInFather( final, topsolid, 'topsolid' )
+# geompy.addToStudyInFather( final, water_to_solid_1, 'water_to_solid_1' )
+# geompy.addToStudyInFather( final, water_to_solid_2, 'water_to_solid_2' )
+# geompy.addToStudyInFather( final, water_to_solid_3, 'water_to_solid_3' )
+# geompy.addToStudyInFather( final, water_to_solid, 'water_to_solid' )
 
 ###########################################################################################
-#  Ajustement des dimensions et Maillage dans blockMesh
+import os
 
-sed("BoiteCote XXX", "BoiteCote " + str(round(BoiteCote,4)), "./../system/blockMeshDict") 
+# =========================================================
+# CONFIGURATION AUTOMATIQUE DE BLOCKMESH
+# =========================================================
 
-sed("lx PasMailleX", "lx " + str(round(PasMailleX,6)), "./../system/blockMeshDict") 
-sed("ly PasMailleY", "ly " + str(round(PasMailleY,6)), "./../system/blockMeshDict") 
-sed("lz PasMailleZ", "lz " + str(round(PasMailleZ,6)), "./../system/blockMeshDict") 
+# 1. Paramètres (récupérés de votre script)
+# Marge de sécurité pour que le maillage englobe bien tout (ex: 5mm)
+# C'est important pour que snappyHexMesh ne crée pas de trous aux bords.
+marge = 0.005 
+
+# Rappel des dimensions de votre géométrie :
+# X : de -EpaisseurBox à (GasCote + EpaisseurBox)
+# Y et Z : de 0 à GasCote
+
+# 2. Calcul des bornes pour le fichier blockMesh
+# On injecte la marge ici
+val_xMin = -EpaisseurBox - marge
+val_xMax = GasCote + EpaisseurBox + marge
+
+val_yMin = 0.0 - marge
+val_yMax = GasCote + marge
+
+val_zMin = 0.0 - marge
+val_zMax = GasCote + marge
+
+print("--- Bornes du maillage de fond (Background Mesh) ---")
+print(f"X : [{val_xMin:.4f}, {val_xMax:.4f}]")
+print(f"Y : [{val_yMin:.4f}, {val_yMax:.4f}]")
+
+# 3. Modification du fichier blockMesh_INI
+path_ini = "./../system/blockMesh_INI"
+
+if os.path.exists(path_ini):
+    print(f"Configuration de {path_ini} ...")
+    
+    # A. Remplacer la variable BoiteCote (info)
+    sed("BoiteCote XXX", f"BoiteCote {GasCote}", path_ini)
+
+    # B. Remplacer les pas de maillage (lx, ly, lz)
+    # ATTENTION : Ici on passe bien la TAILLE (0.005), pas le nombre !
+    sed("lx PasMailleX", f"lx {PasMailleX}", path_ini)
+    sed("ly PasMailleY", f"ly {PasMailleY}", path_ini)
+    sed("lz PasMailleZ", f"lz {PasMailleZ}", path_ini)
+
+    # C. Remplacer les bornes (Min/Max)
+    # On remplace nos placeholders MIN_X, MAX_X, etc.
+    # Si vous n'avez pas modifié le fichier et gardé "xMin -0.01", 
+    # changez "MIN_X" ci-dessous par "xMin -0.01" dans la fonction sed.
+    
+    sed("MIN_X", f"{val_xMin:.5f}", path_ini)
+    sed("MAX_X", f"{val_xMax:.5f}", path_ini)
+    
+    sed("MIN_Y", f"{val_yMin:.5f}", path_ini)
+    sed("MAX_Y", f"{val_yMax:.5f}", path_ini)
+    
+    sed("MIN_Z", f"{val_zMin:.5f}", path_ini)
+    sed("MAX_Z", f"{val_zMax:.5f}", path_ini)
+
+    print("blockMesh_INI mis à jour.")
+else:
+    print(f"ERREUR : Fichier {path_ini} introuvable.")
 
 
 
 ###########################################################################################
-#  Defintion des sondes
+#  Definition des sondes (PROBES)
+#  Objectif : Mesurer le gradient thermique le long de l'axe X (traversant la sphère)
+###########################################################################################
 
-XProbe = (BoiteCote/2 - TubeRayonCourb - TubeD/2)/2
-YProbe = BoiteCote/2
+# On se place au milieu de la hauteur et de la profondeur pour taper dans la sphère
+YProbe = Center
+ZProbe = Center
 
-
-ZProbe = 0.9 * BoiteCote
-sed("X1 Y1 Z1", str(round(XProbe,2))+" "+str(round(YProbe,2))+" "+str(round(ZProbe,2)), "./../system/Probes_Solid") 
+# --- Sonde 1 : Milieu du Gaz coté CHAUD (Entre Mur Gauche et Sphère) ---
+# Le mur est à X=0, la sphère commence à (Center - R_sphere)
+XProbe = (Center - R_sphere) / 2.0
+sed("X1 Y1 Z1", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), "./../system/Probes_Solid") 
 Probe_1 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
-geompy.addToStudy(Probe_1, "Probe_1")
+geompy.addToStudy(Probe_1, "Probe_1_Gas_Hot")
 
-ZProbe = 0.7 * BoiteCote
-sed("X2 Y2 Z2", str(round(XProbe,2))+" "+str(round(YProbe,2))+" "+str(round(ZProbe,2)), "./../system/Probes_Solid") 
+# --- Sonde 2 : Interface Entrée Sphère ---
+# Juste un tout petit peu à l'intérieur de la sphère pour être sûr
+XProbe = Center - R_sphere + 0.001 
+sed("X2 Y2 Z2", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), "./../system/Probes_Solid") 
 Probe_2 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
-geompy.addToStudy(Probe_2, "Probe_2")
+geompy.addToStudy(Probe_2, "Probe_2_Interface_In")
 
-ZProbe = 0.5 * BoiteCote
-sed("X3 Y3 Z3", str(round(XProbe,2))+" "+str(round(YProbe,2))+" "+str(round(ZProbe,2)), "./../system/Probes_Solid") 
+# --- Sonde 3 : Cœur de la Sphère (Centre) ---
+XProbe = Center
+sed("X3 Y3 Z3", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), "./../system/Probes_Solid") 
 Probe_3 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
-geompy.addToStudy(Probe_3, "Probe_3")
+geompy.addToStudy(Probe_3, "Probe_3_Center")
 
-ZProbe = 0.3 * BoiteCote
-sed("X4 Y4 Z4", str(round(XProbe,2))+" "+str(round(YProbe,2))+" "+str(round(ZProbe,2)), "./../system/Probes_Solid") 
+# --- Sonde 4 : Interface Sortie Sphère ---
+# Juste un tout petit peu à l'intérieur
+XProbe = Center + R_sphere - 0.001
+sed("X4 Y4 Z4", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), "./../system/Probes_Solid") 
 Probe_4 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
-geompy.addToStudy(Probe_4, "Probe_4")
+geompy.addToStudy(Probe_4, "Probe_4_Interface_Out")
 
-ZProbe = 0.1 * BoiteCote
-sed("X5 Y5 Z5", str(round(XProbe,2))+" "+str(round(YProbe,2))+" "+str(round(ZProbe,2)), "./../system/Probes_Solid") 
+# --- Sonde 5 : Milieu du Gaz coté FROID (Entre Sphère et Mur Droit) ---
+# La sphère finit à (Center + R_sphere), le gaz finit à GasCote
+XProbe = (Center + R_sphere) + (GasCote - (Center + R_sphere)) / 2.0
+sed("X5 Y5 Z5", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), "./../system/Probes_Solid") 
 Probe_5 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
-geompy.addToStudy(Probe_5, "Probe_5")
+geompy.addToStudy(Probe_5, "Probe_5_Gas_Cold")
 
+# (Optionnel) Une sonde "Témoin" loin de la sphère pour voir la convection libre ?
+# Si vous voulez voir si la chaleur monte (Convection), vous pourriez en mettre une en haut du gaz :
+# Probe_6 = geompy.MakeVertex(XProbe, GasCote*0.9, Center)
 ###########################################################################################
 #  Defintion de Graph_Centre
 
