@@ -13,11 +13,15 @@ geompy = geomBuilder.New()
 import os
 import sys
 
-Main_dir = os.getcwd()
-Def_Geometrie_dir = os.path.join( Main_dir, 'Parametres')
-sys.path.append( Def_Geometrie_dir )
+# Main_dir = os.getcwd()
+# Def_Geometrie_dir = os.path.join( Main_dir, 'Parametres')
+# sys.path.append( Def_Geometrie_dir )
 
+path_parametres = "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/Geom_Salome_STLFiles/Parametres"
 
+# 2. On l'ajoute à la liste des chemins que Python connaît
+if path_parametres not in sys.path:
+    sys.path.append(path_parametres)
 ###########################
 # Import parameters files #
 ###########################
@@ -60,81 +64,97 @@ objets_a_partitionner = [gas, sphere, box_xmax, box_xmin]
 Geometry_Finale = geompy.MakePartition(objets_a_partitionner, [], [], [], geompy.ShapeType["SOLID"])
 
 
-ggeompy.addToStudy(Geometry_Finale, 'DOMAINE_COMPLET')
+geompy.addToStudy(Geometry_Finale, 'DOMAINE_COMPLET')
 
-# =========================================================
-# 5. CREATION DES GROUPES (NOMENCLATURE OPENFOAM)
+## 5. CREATION DES GROUPES (Version Corrigée pour Salome 9+)
 # =========================================================
 
 # Petite tolérance
 eps = 1e-6 
 
+def get_shapes_in_box_coords(shape, x1, y1, z1, x2, y2, z2, shape_type):
+    # Crée une boite temporaire pour la sélection
+    p_min = geompy.MakeVertex(x1, y1, z1)
+    p_max = geompy.MakeVertex(x2, y2, z2)
+    box_sel = geompy.MakeBoxTwoPnt(p_min, p_max)
+    
+    # AJOUT du 4ème argument : geompy.GEOM.ST_ONIN
+    # Cela sélectionne tout ce qui est DANS la boite ou TOUCHE la boite
+    ids = geompy.GetShapesOnBox(shape, box_sel, shape_type, geompy.GEOM.ST_ONIN)
+    
+    return ids
+
 # --- A. LES VOLUMES (cellZones) ---
-# Noms demandés : gas, sphere, box_xmin, box_xmax
 
 # 1. box_xmin (Mur Gauche)
 g_box_xmin = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["SOLID"])
-ids_xmin = geompy.GetShapesOnBox(Geometry_Finale, -EpaisseurBox-eps, -eps, -eps, eps, GasCote+eps, GasCote+eps, geompy.ShapeType["SOLID"])
+# Utilisation de la nouvelle fonction
+ids_xmin = get_shapes_in_box_coords(Geometry_Finale, 
+                                    -EpaisseurBox-eps, -eps, -eps, 
+                                    eps, GasCote+eps, GasCote+eps, 
+                                    geompy.ShapeType["SOLID"])
 geompy.UnionList(g_box_xmin, ids_xmin)
 geompy.addToStudyInFather(Geometry_Finale, g_box_xmin, 'box_xmin')
 
 # 2. box_xmax (Mur Droit)
 g_box_xmax = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["SOLID"])
-ids_xmax = geompy.GetShapesOnBox(Geometry_Finale, GasCote-eps, -eps, -eps, GasCote+EpaisseurBox+eps, GasCote+eps, GasCote+eps, geompy.ShapeType["SOLID"])
+ids_xmax = get_shapes_in_box_coords(Geometry_Finale, 
+                                    GasCote-eps, -eps, -eps, 
+                                    GasCote+EpaisseurBox+eps, GasCote+eps, GasCote+eps, 
+                                    geompy.ShapeType["SOLID"])
 geompy.UnionList(g_box_xmax, ids_xmax)
 geompy.addToStudyInFather(Geometry_Finale, g_box_xmax, 'box_xmax')
 
-# 3. sphere
+# 3. sphere (Reste inchangé car GetShapesOnSphere accepte encore les arguments)
 g_sphere = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["SOLID"])
 ids_sphere = geompy.GetShapesOnSphere(Geometry_Finale, geompy.MakeVertex(Center, Center, Center), R_sphere/2.0, geompy.ShapeType["SOLID"])
 geompy.UnionList(g_sphere, ids_sphere)
 geompy.addToStudyInFather(Geometry_Finale, g_sphere, 'sphere')
 
 # 4. gas
-# Tout ce qui est au centre MOINS la sphère
 g_gas = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["SOLID"])
-ids_central = geompy.GetShapesOnBox(Geometry_Finale, -eps, -eps, -eps, GasCote+eps, GasCote+eps, GasCote+eps, geompy.ShapeType["SOLID"])
+# On sélectionne tout le cube central
+ids_central = get_shapes_in_box_coords(Geometry_Finale, 
+                                       -eps, -eps, -eps, 
+                                       GasCote+eps, GasCote+eps, GasCote+eps, 
+                                       geompy.ShapeType["SOLID"])
+# On retire la sphère
 ids_gas = list(set(ids_central) - set(ids_sphere))
 geompy.UnionList(g_gas, ids_gas)
 geompy.addToStudyInFather(Geometry_Finale, g_gas, 'gas')
 
 
 # --- B. LES INTERFACES (region1_to_region2) ---
-# Astuce : On cherche les faces partagées.
-# Dans Salome, une face partagée appartient à la partition. 
-# Pour l'identifier, on regarde si elle touche les géométries originales.
+# GetShapesOnShape fonctionne toujours normalement
 
-# 1. Interface Gas <-> Sphere (gas_to_sphere)
+# 1. Interface Gas <-> Sphere
 g_int_gas_sphere = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
-# On cherche les faces qui sont SUR la sphère géométrique d'origine
 ids_int_GS = geompy.GetShapesOnShape(Geometry_Finale, sphere, geompy.ShapeType["FACE"], geompy.GEOM.ST_ON)
 geompy.UnionList(g_int_gas_sphere, ids_int_GS)
 geompy.addToStudyInFather(Geometry_Finale, g_int_gas_sphere, 'gas_to_sphere')
 
-# 2. Interface box_xmin <-> Gas (box_xmin_to_gas)
+# 2. Interface box_xmin <-> Gas
 g_int_xmin_gas = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
-# C'est le plan X = 0
 ids_int_XG = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(0, 0, 0), eps)
 geompy.UnionList(g_int_xmin_gas, ids_int_XG)
 geompy.addToStudyInFather(Geometry_Finale, g_int_xmin_gas, 'box_xmin_to_gas')
 
-# 3. Interface Gas <-> box_xmax (gas_to_box_xmax)
+# 3. Interface Gas <-> box_xmax
 g_int_xmax_gas = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
-# C'est le plan X = GasCote
 ids_int_GX = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(GasCote, 0, 0), eps)
 geompy.UnionList(g_int_xmax_gas, ids_int_GX)
 geompy.addToStudyInFather(Geometry_Finale, g_int_xmax_gas, 'gas_to_box_xmax')
 
 
-# --- C. LES PAROIS EXTERNES (Conditions Limites) ---
+# --- C. LES PAROIS EXTERNES ---
 
-# 1. Extérieur Gauche (external_box_xmin) -> Pour Température Fixe
+# 1. Extérieur Gauche
 g_ext_xmin = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
 ids_ext_xmin = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(-EpaisseurBox, 0, 0), eps)
 geompy.UnionList(g_ext_xmin, ids_ext_xmin)
 geompy.addToStudyInFather(Geometry_Finale, g_ext_xmin, 'external_box_xmin')
 
-# 2. Extérieur Droit (external_box_xmax) -> Pour Température Fixe
+# 2. Extérieur Droit
 g_ext_xmax = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
 ids_ext_xmax = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(GasCote+EpaisseurBox, 0, 0), eps)
 geompy.UnionList(g_ext_xmax, ids_ext_xmax)
@@ -331,114 +351,113 @@ geompy.addToStudy(Probe_5, "Probe_5_Gas_Cold")
 # (Optionnel) Une sonde "Témoin" loin de la sphère pour voir la convection libre ?
 # Si vous voulez voir si la chaleur monte (Convection), vous pourriez en mettre une en haut du gaz :
 # Probe_6 = geompy.MakeVertex(XProbe, GasCote*0.9, Center)
-###########################################################################################
-#  Defintion de Graph_Centre
+# ###########################################################################################
+# #  Defintion de Graph_Centre
 
-X1 = BoiteCote/2
-Y1 = BoiteCote/2
-Z1 = BoiteCote
+# X1 = BoiteCote/2
+# Y1 = BoiteCote/2
+# Z1 = BoiteCote
 
-X2 = BoiteCote/2
-Y2 = BoiteCote/2
-Z2 = 0.
+# X2 = BoiteCote/2
+# Y2 = BoiteCote/2
+# Z2 = 0.
 
-sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_Centre_Solid") 
-sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_Centre_Water") 
+# sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_Centre_Solid") 
+# sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_Centre_Water") 
 
-sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_Centre_Solid") 
-sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_Centre_Water") 
+# sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_Centre_Solid") 
+# sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_Centre_Water") 
 
-P_1_ZGraph_Centre_Solid = geompy.MakeVertex(X1, Y1, Z1)
-geompy.addToStudy(P_1_ZGraph_Centre_Solid, "P_1_ZGraph_Centre_Solid")
-P_2_ZGraph_Centre_Solid = geompy.MakeVertex(X2, Y2, Z2)
-geompy.addToStudy(P_2_ZGraph_Centre_Solid, "P_2_ZGraph_Centre_Solid")
+# P_1_ZGraph_Centre_Solid = geompy.MakeVertex(X1, Y1, Z1)
+# geompy.addToStudy(P_1_ZGraph_Centre_Solid, "P_1_ZGraph_Centre_Solid")
+# P_2_ZGraph_Centre_Solid = geompy.MakeVertex(X2, Y2, Z2)
+# geompy.addToStudy(P_2_ZGraph_Centre_Solid, "P_2_ZGraph_Centre_Solid")
 
-Graph_Centre = geompy.MakeLineTwoPnt(P_1_ZGraph_Centre_Solid, P_2_ZGraph_Centre_Solid)
-geompy.addToStudy(Graph_Centre, "Graph_Centre")
+# Graph_Centre = geompy.MakeLineTwoPnt(P_1_ZGraph_Centre_Solid, P_2_ZGraph_Centre_Solid)
+# geompy.addToStudy(Graph_Centre, "Graph_Centre")
 
-###########################################################################################
-#  Defintion de Graph_CentreTubeSortie
+# ###########################################################################################
+# #  Defintion de Graph_CentreTubeSortie
 
-X1 = BoiteCote/2 + TubeRayonCourb
-Y1 = BoiteCote/2
-Z1 = BoiteCote
+# X1 = BoiteCote/2 + TubeRayonCourb
+# Y1 = BoiteCote/2
+# Z1 = BoiteCote
 
-X2 = BoiteCote/2 + TubeRayonCourb
-Y2 = BoiteCote/2
-Z2 = 0.
+# X2 = BoiteCote/2 + TubeRayonCourb
+# Y2 = BoiteCote/2
+# Z2 = 0.
 
-sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_CentreTubeSortie_Solid") 
-sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_CentreTubeSortie_Water") 
+# sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_CentreTubeSortie_Solid") 
+# sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_CentreTubeSortie_Water") 
 
-sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_CentreTubeSortie_Solid") 
-sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_CentreTubeSortie_Water") 
+# sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_CentreTubeSortie_Solid") 
+# sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_CentreTubeSortie_Water") 
 
-P_1_ZGraph_CentreTube = geompy.MakeVertex(X1, Y1, Z1)
-geompy.addToStudy(P_1_ZGraph_CentreTube, "P_1_ZGraph_CentreTube")
-P_2_ZGraph_CentreTube = geompy.MakeVertex(X2, Y2, Z2)
-geompy.addToStudy(P_2_ZGraph_CentreTube, "P_2_ZGraph_CentreTube")
+# P_1_ZGraph_CentreTube = geompy.MakeVertex(X1, Y1, Z1)
+# geompy.addToStudy(P_1_ZGraph_CentreTube, "P_1_ZGraph_CentreTube")
+# P_2_ZGraph_CentreTube = geompy.MakeVertex(X2, Y2, Z2)
+# geompy.addToStudy(P_2_ZGraph_CentreTube, "P_2_ZGraph_CentreTube")
 
-Graph_CentreTube = geompy.MakeLineTwoPnt(P_1_ZGraph_CentreTube, P_2_ZGraph_CentreTube)
-geompy.addToStudy(Graph_CentreTube, "Graph_CentreTube")
-
-
-###########################################################################################
-#  Defintion de Graph_CoteSortie_Solid
-
-X1s = BoiteCote/2 - TubeRayonCourb - TubeD
-Y1 = BoiteCote/2
-Z1 = BoiteCote
-
-X2s = (BoiteCote/2 - TubeRayonCourb - TubeD/2)/2
-Y2 = BoiteCote/2
-Z2 = 0.
-
-sed("X1 Y1 Z1", str(round(X1s,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_CoteSortie_Solid") 
-
-sed("X2 Y2 Z2", str(round(X2s,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_CoteSortie_Solid") 
+# Graph_CentreTube = geompy.MakeLineTwoPnt(P_1_ZGraph_CentreTube, P_2_ZGraph_CentreTube)
+# geompy.addToStudy(Graph_CentreTube, "Graph_CentreTube")
 
 
-P_1_ZGraph_CoteSortie = geompy.MakeVertex(X1s, Y1, Z1)
-geompy.addToStudy(P_1_ZGraph_CoteSortie, "P_1_ZGraph_CoteSortie")
-P_2_ZGraph_CoteSortie = geompy.MakeVertex(X2s, Y2, Z2)
-geompy.addToStudy(P_2_ZGraph_CoteSortie, "P_2_ZGraph_CoteSortie")
+# ###########################################################################################
+# #  Defintion de Graph_CoteSortie_Solid
 
-Graph_CoteSortie = geompy.MakeLineTwoPnt(P_1_ZGraph_CoteSortie, P_2_ZGraph_CoteSortie)
-geompy.addToStudy(Graph_CoteSortie, "Graph_CoteSortie")
+# X1s = BoiteCote/2 - TubeRayonCourb - TubeD
+# Y1 = BoiteCote/2
+# Z1 = BoiteCote
 
+# X2s = (BoiteCote/2 - TubeRayonCourb - TubeD/2)/2
+# Y2 = BoiteCote/2
+# Z2 = 0.
 
-###########################################################################################
-#  Defintion de Graph_CoteEntree_Solid
+# sed("X1 Y1 Z1", str(round(X1s,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_CoteSortie_Solid") 
 
-X1 = BoiteCote - X1s
-Y1 = BoiteCote/2
-Z1 = BoiteCote
-
-X2 = BoiteCote - X2s
-Y2 = BoiteCote/2
-Z2 = 0.
-
-sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_CoteEntree_Solid") 
-
-sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_CoteEntree_Solid") 
+# sed("X2 Y2 Z2", str(round(X2s,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_CoteSortie_Solid") 
 
 
-P_1_ZGraph_CoteEntree = geompy.MakeVertex(X1, Y1, Z1)
-geompy.addToStudy(P_1_ZGraph_CoteEntree, "P_1_ZGraph_CoteEntree")
-P_2_ZGraph_CoteEntree = geompy.MakeVertex(X2, Y2, Z2)
-geompy.addToStudy(P_2_ZGraph_CoteEntree, "P_2_ZGraph_CoteEntree")
+# P_1_ZGraph_CoteSortie = geompy.MakeVertex(X1s, Y1, Z1)
+# geompy.addToStudy(P_1_ZGraph_CoteSortie, "P_1_ZGraph_CoteSortie")
+# P_2_ZGraph_CoteSortie = geompy.MakeVertex(X2s, Y2, Z2)
+# geompy.addToStudy(P_2_ZGraph_CoteSortie, "P_2_ZGraph_CoteSortie")
 
-Graph_CoteEntree = geompy.MakeLineTwoPnt(P_1_ZGraph_CoteEntree, P_2_ZGraph_CoteEntree)
-geompy.addToStudy(Graph_CoteEntree, "Graph_CoteEntree")
-
-
-###########################################################################################
-#  Defintion des bornes de l'axe abscisses pour le graphique des profils T
-
-sed("BoiteCote = XXXX", "BoiteCote = " + str(round(BoiteCote,4)), "./../case_treatment/Plot_Graph_CSV.py") 
+# Graph_CoteSortie = geompy.MakeLineTwoPnt(P_1_ZGraph_CoteSortie, P_2_ZGraph_CoteSortie)
+# geompy.addToStudy(Graph_CoteSortie, "Graph_CoteSortie")
 
 
-print("That's All Folks !")
+# ###########################################################################################
+# #  Defintion de Graph_CoteEntree_Solid
+
+# X1 = BoiteCote - X1s
+# Y1 = BoiteCote/2
+# Z1 = BoiteCote
+
+# X2 = BoiteCote - X2s
+# Y2 = BoiteCote/2
+# Z2 = 0.
+
+# sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_CoteEntree_Solid") 
+
+# sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_CoteEntree_Solid") 
+
+
+# P_1_ZGraph_CoteEntree = geompy.MakeVertex(X1, Y1, Z1)
+# geompy.addToStudy(P_1_ZGraph_CoteEntree, "P_1_ZGraph_CoteEntree")
+# P_2_ZGraph_CoteEntree = geompy.MakeVertex(X2, Y2, Z2)
+# geompy.addToStudy(P_2_ZGraph_CoteEntree, "P_2_ZGraph_CoteEntree")
+
+# Graph_CoteEntree = geompy.MakeLineTwoPnt(P_1_ZGraph_CoteEntree, P_2_ZGraph_CoteEntree)
+# geompy.addToStudy(Graph_CoteEntree, "Graph_CoteEntree")
+
+
+# ###########################################################################################
+# #  Defintion des bornes de l'axe abscisses pour le graphique des profils T
+
+# sed("BoiteCote = XXXX", "BoiteCote = " + str(round(BoiteCote,4)), "./../case_treatment/Plot_Graph_CSV.py") 
+
+
 
 
 
@@ -447,3 +466,71 @@ print("That's All Folks !")
 if salome.sg.hasDesktop():
   salome.sg.updateObjBrowser()
 
+# 8. CONFIGURATION SNAPPYHEXMESH (LocationsInMesh)
+# =========================================================
+# Il faut donner un point (x,y,z) INSIDE chaque zone pour que snappyHexMesh
+# sache comment attribuer les mailles (cellZones).
+
+# A. Calcul des coordonnées
+# Sphere : Au centre
+loc_sphere_x = Center
+loc_sphere_y = Center
+loc_sphere_z = Center
+
+# Box XMIN (Mur Gauche) : Au milieu de l'épaisseur du mur
+# X entre -Epaisseur et 0
+loc_xmin_x = -EpaisseurBox / 2.0
+loc_xmin_y = Center
+loc_xmin_z = Center
+
+# Box XMAX (Mur Droit) : Au milieu de l'épaisseur du mur
+# X entre GasCote et GasCote+Epaisseur
+loc_xmax_x = GasCote + (EpaisseurBox / 2.0)
+loc_xmax_y = Center
+loc_xmax_z = Center
+
+# Gas : C'est le piège ! Si on prend le centre, on est dans la sphère.
+# Il faut un point dans le gaz, mais hors de la sphère.
+# On se met "dans le coin" du cube de gaz.
+# (Exemple: 10% de la taille de la boite)
+loc_gas_x = GasCote * 0.1
+loc_gas_y = GasCote * 0.1
+loc_gas_z = GasCote * 0.1
+
+print("--- Points de référence (LocationInMesh) ---")
+print(f"Sphere : {loc_sphere_x:.4f} {loc_sphere_y:.4f} {loc_sphere_z:.4f}")
+print(f"Gas    : {loc_gas_x:.4f} {loc_gas_y:.4f} {loc_gas_z:.4f}")
+
+# B. Remplacement dans snappyHexMeshDict_INI
+path_snappy = "./../system/snappyHexMeshDict_INI"
+
+if os.path.exists(path_snappy):
+    print(f"Mise à jour de {path_snappy} ...")
+    
+    # Remplacement Sphere
+    sed("LOC_X_SPHERE", f"{loc_sphere_x:.5f}", path_snappy)
+    sed("LOC_Y_SPHERE", f"{loc_sphere_y:.5f}", path_snappy)
+    sed("LOC_Z_SPHERE", f"{loc_sphere_z:.5f}", path_snappy)
+
+    # Remplacement Gas
+    sed("LOC_X_GAS", f"{loc_gas_x:.5f}", path_snappy)
+    sed("LOC_Y_GAS", f"{loc_gas_y:.5f}", path_snappy)
+    sed("LOC_Z_GAS", f"{loc_gas_z:.5f}", path_snappy)
+    
+    # Remplacement Box Xmin
+    sed("LOC_X_XMIN", f"{loc_xmin_x:.5f}", path_snappy)
+    sed("LOC_Y_XMIN", f"{loc_xmin_y:.5f}", path_snappy)
+    sed("LOC_Z_XMIN", f"{loc_xmin_z:.5f}", path_snappy)
+
+    # Remplacement Box Xmax
+    sed("LOC_X_XMAX", f"{loc_xmax_x:.5f}", path_snappy)
+    sed("LOC_Y_XMAX", f"{loc_xmax_y:.5f}", path_snappy)
+    sed("LOC_Z_XMAX", f"{loc_xmax_z:.5f}", path_snappy)
+    
+    print("snappyHexMeshDict_INI prêt.")
+else:
+    print(f"ERREUR : {path_snappy} introuvable.")
+
+
+
+print("That's All Folks !")

@@ -18,148 +18,89 @@ FoamFile
 
 castellatedMesh on;
 snap            on;
-addLayers       on;
+addLayers       off;
 
 geometry
 {
-    solid.stl
-    {
-        type            triSurfaceMesh;
-        name            solid;
-        regions
-        {
-            bottom   {name    bottom;}
-            top      {name    top;}
-            minX     {name    minX;}
-            minY     {name    minY;}
-            maxX     {name    maxX;}
-            maxY     {name    maxY;}
-        }
-    }
-    water.stl
-    {
-        type            triSurfaceMesh;
-        name            water;
-        regions
-        {
-            inlet    {name    inlet;}
-            outlet   {name    outlet;}
-        }
-    }
-    water_to_solid.stl
-    {
-        type            triSurfaceMesh;
-        name            water_to_solid;
-    }
+    // 1. Définition des fichiers STL générés par Python
+    gas.stl       { type triSurfaceMesh; name gas; }
+    sphere.stl    { type triSurfaceMesh; name sphere; }
+    box_xmin.stl  { type triSurfaceMesh; name box_xmin; }
+    box_xmax.stl  { type triSurfaceMesh; name box_xmax; }
+    
+    // Faces externes (pour conditions limites précises)
+    external_box_xmin.stl { type triSurfaceMesh; name external_box_xmin; }
+    external_box_xmax.stl { type triSurfaceMesh; name external_box_xmax; }
 }
 
 castellatedMeshControls
 {
-    nCellsBetweenLevels 5;    
-    allowFreeStandingZoneFaces true;   
-    
+    nCellsBetweenLevels 3;
+
+    // Gestion des interfaces multi-matériaux
+    allowFreeStandingZoneFaces true;
+
     features
     (
-       {file "solid.extendedFeatureEdgeMesh"; level 0;} 
-       {file "water.extendedFeatureEdgeMesh"; level 0;} 
-       {file "water_to_solid.extendedFeatureEdgeMesh"; level 3;} 
+        { file "gas.eMesh"; level 1; }
+        { file "sphere.eMesh"; level 1; }
     );
-    
+
     refinementSurfaces
     {
-        solid
-        {
-            level           ( 0 0 );
-            regions
-            {
-                bottom    { level ( 0 3 ); patchInfo { type   patch; } }
-                top       { level ( 2 2 ); patchInfo { type   patch; } }
-                minX      { level ( 0 0 ); patchInfo { type   patch; } }
-                minY      { level ( 0 0 ); patchInfo { type   patch; } }
-                maxX      { level ( 0 0 ); patchInfo { type   patch; } }
-                maxY      { level ( 0 0 ); patchInfo { type   patch; } }
-            }
-        }
-        water
-        {
-            level           ( 0 0 );
-            regions
-            {
-                inlet     { level ( 0 0 ); patchInfo { type   patch; } }
-                outlet    { level ( 0 0 ); patchInfo { type   patch; } }
-            }
-        }
-        water_to_solid
-        {
-            level           ( 3 3 );
-        }
+        // Niveau de raffinement (min max)
+        gas         { level (0 0); }
+        sphere      { level (2 2); } 
+        box_xmin    { level (0 0); }
+        box_xmax    { level (0 0); }
+
+        external_box_xmin { level (0 0); }
+        external_box_xmax { level (0 0); }
     }
 
+    resolveFeatureAngle 30;
 
     refinementRegions
     {
     }
-    
 
-    nCellsBetweenLevels 2;
-
-    resolveFeatureAngle 15;
-
-//    locationInMesh  ( 0.0001 0.0001 0.0001 );
-
+    // C'EST ICI QUE PYTHON VA INJECTER LES COORDONNEES
     locationsInMesh
     (
-        ((0.0001 0.0001 0.0001) solid)
-        ((0.02 0.05 0.0001) water)
+        ((LOC_X_GAS   LOC_Y_GAS   LOC_Z_GAS)    gas)
+        ((LOC_X_SPHERE LOC_Y_SPHERE LOC_Z_SPHERE) sphere)
+        ((LOC_X_XMIN  LOC_Y_XMIN  LOC_Z_XMIN)   box_xmin)
+        ((LOC_X_XMAX  LOC_Y_XMAX  LOC_Z_XMAX)   box_xmax)
     );
-
 }
 
 snapControls
 {
-    implicitFeatureSnap    true;
+    implicitFeatureSnap true;
+    multiRegionFeatureSnap true; 
+    nSmoothPatch 3;
+    tolerance 2.0;
+    nSolveIter 30;
+    nRelaxIter 5;
 }
-
 
 addLayersControls
 {
+    relativeSizes true;
     layers
     {
-        top
-        {
-            nSurfaceLayers  4;
-        }
-        
-        water_to_solid
-        {
-            nSurfaceLayers  4;
-        }        
-
-        solid_to_water
-        {
-            nSurfaceLayers  4;
-        }        
+        "sphere_.*" { nSurfaceLayers 2; }
     }
-
-    relativeSizes       true; // was true 
-
-    expansionRatio 1.2; 
-    firstLayerThickness 0.2; //was 0.00016 
-    minThickness 0.000025; //was 0.00008 
- 
+    expansionRatio 1.1;
+    finalLayerThickness 0.3;
+    minThickness 0.1;
 }
 
 meshQualityControls
 {
     #include "meshQualityDict"
-
-    relaxed
-    {
-        maxNonOrtho 75;
-    }
 }
 
-mergeTolerance  1e-06;
-
+mergeTolerance 1e-6;
 
 // ************************************************************************* //
