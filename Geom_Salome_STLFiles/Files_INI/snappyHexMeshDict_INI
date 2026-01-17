@@ -50,7 +50,7 @@ castellatedMeshControls
     {
         // Niveau de raffinement (min max)
         gas         { level (0 0); }
-        sphere      { level (2 2); } 
+        sphere      { level (0 0); } 
         box_xmin    { level (0 0); }
         box_xmax    { level (0 0); }
 
@@ -67,10 +67,10 @@ castellatedMeshControls
     // C'EST ICI QUE PYTHON VA INJECTER LES COORDONNEES
     locationsInMesh
     (
-        ((LOC_X_GAS   LOC_Y_GAS   LOC_Z_GAS)    gas)
-        ((LOC_X_SPHERE LOC_Y_SPHERE LOC_Z_SPHERE) sphere)
-        ((LOC_X_XMIN  LOC_Y_XMIN  LOC_Z_XMIN)   box_xmin)
-        ((LOC_X_XMAX  LOC_Y_XMAX  LOC_Z_XMAX)   box_xmax)
+        ((0.01000   0.01000   0.01000)    gas)
+        ((0.05000 0.05000 0.05000) sphere)
+        ((-0.00600  0.05000  0.05000)   box_xmin)
+        ((0.10500  0.05000  0.05000)   box_xmax)
     );
 }
 

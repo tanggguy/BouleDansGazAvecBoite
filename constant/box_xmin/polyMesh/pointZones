@@ -1,7 +1,7 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  2512                                  |
+|  \\    /   O peration     | Version:  2506                                  |
 |   \\  /    A nd           | Website:  www.openfoam.com                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
@@ -11,18 +11,17 @@ FoamFile
     format      binary;
     arch        "LSB;label=32;scalar=64";
     class       regIOobject;
-    location    "constant/solid/polyMesh";
+    location    "constant/box_xmin/polyMesh";
     object      pointZones;
     meta
     {
-        names           ( frozenPoints );
+        names           1 ( frozenPoints );
     }
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 1
-(
-frozenPoints
+(frozenPoints
 {
     type            pointZone;
     pointLabels     List<label> 0;

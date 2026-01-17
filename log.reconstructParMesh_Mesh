@@ -1,0 +1,132 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _615aae61-20250627 OPENFOAM=2506 version=2506
+Arch   : "LSB;label=32;scalar=64"
+Exec   : reconstructParMesh -allRegions -constant
+Date   : Jan 17 2026
+Time   : 01:13:36
+Host   : tanguy-VMware-Virtual-Platform
+PID    : 17360
+I/O    : uncollated
+Case   : /home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite
+nProcs : 1
+trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Merge individual processor meshes back into one master mesh.
+Use if the original master mesh has been deleted or the processor meshes
+have been modified (topology change).
+This tool will write the resulting mesh to a new time step and construct
+xxxxProcAddressing files in the processor meshes so reconstructPar can be
+used to regenerate the fields on the master mesh.
+
+Not well tested & use at your own risk!
+
+Merge assuming correct, fully matched procBoundaries.
+
+Using all regions: (gas sphere box_xmin box_xmax)
+Found 2 processor directories
+    Reading database "BouleDansGazAvecBoite/processor0"
+    Reading database "BouleDansGazAvecBoite/processor1"
+
+Time = constant
+
+region=gas
+
+Writing merged mesh to "constant/gas/polyMesh"
+
+Reconstructing addressing from processor meshes to the newly reconstructed mesh
+
+Processor 0
+Read processor mesh: "BouleDansGazAvecBoite/processor0/gas"
+Writing addressing : "BouleDansGazAvecBoite/processor0/constant/gas/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
+Processor 1
+Read processor mesh: "BouleDansGazAvecBoite/processor1/gas"
+Writing addressing : "BouleDansGazAvecBoite/processor1/constant/gas/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
+region=sphere
+
+Writing merged mesh to "constant/sphere/polyMesh"
+
+Reconstructing addressing from processor meshes to the newly reconstructed mesh
+
+Processor 0
+Read processor mesh: "BouleDansGazAvecBoite/processor0/sphere"
+Writing addressing : "BouleDansGazAvecBoite/processor0/constant/sphere/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
+Processor 1
+Read processor mesh: "BouleDansGazAvecBoite/processor1/sphere"
+Writing addressing : "BouleDansGazAvecBoite/processor1/constant/sphere/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
+region=box_xmin
+
+Writing merged mesh to "constant/box_xmin/polyMesh"
+
+Reconstructing addressing from processor meshes to the newly reconstructed mesh
+
+Processor 0
+Read processor mesh: "BouleDansGazAvecBoite/processor0/box_xmin"
+Writing addressing : "BouleDansGazAvecBoite/processor0/constant/box_xmin/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
+Processor 1
+Read processor mesh: "BouleDansGazAvecBoite/processor1/box_xmin"
+Writing addressing : "BouleDansGazAvecBoite/processor1/constant/box_xmin/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
+region=box_xmax
+
+Writing merged mesh to "constant/box_xmax/polyMesh"
+
+Reconstructing addressing from processor meshes to the newly reconstructed mesh
+
+Processor 0
+Read processor mesh: "BouleDansGazAvecBoite/processor0/box_xmax"
+Writing addressing : "BouleDansGazAvecBoite/processor0/constant/box_xmax/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
+Processor 1
+Read processor mesh: "BouleDansGazAvecBoite/processor1/box_xmax"
+Writing addressing : "BouleDansGazAvecBoite/processor1/constant/box_xmax/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
+End
+

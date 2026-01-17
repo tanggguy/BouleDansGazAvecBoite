@@ -4,10 +4,8 @@
 ############################################################
 
 import salome
-
-salome.salome_init()
+import GEOM
 from salome.geom import geomBuilder
-
 geompy = geomBuilder.New()
 
 import os
@@ -63,7 +61,6 @@ geompy.TranslateDXDYDZ(box_xmin, -EpaisseurBox, 0, 0)
 objets_a_partitionner = [gas, sphere, box_xmax, box_xmin]
 Geometry_Finale = geompy.MakePartition(objets_a_partitionner, [], [], [], geompy.ShapeType["SOLID"])
 
-
 geompy.addToStudy(Geometry_Finale, 'DOMAINE_COMPLET')
 
 ## 5. CREATION DES GROUPES (Version Corrigée pour Salome 9+)
@@ -78,10 +75,10 @@ def get_shapes_in_box_coords(shape, x1, y1, z1, x2, y2, z2, shape_type):
     p_max = geompy.MakeVertex(x2, y2, z2)
     box_sel = geompy.MakeBoxTwoPnt(p_min, p_max)
     
-    # AJOUT du 4ème argument : geompy.GEOM.ST_ONIN
-    # Cela sélectionne tout ce qui est DANS la boite ou TOUCHE la boite
-    ids = geompy.GetShapesOnBox(shape, box_sel, shape_type, geompy.GEOM.ST_ONIN)
-    
+    # GetShapesOnShape(theCheckShape, theShape, theShapeType, theState)
+    # Le premier argument (theCheckShape) est la boite de sélection, 
+    # le deuxième (theShape) est la géométrie à parcourir
+    ids = geompy.GetShapesOnShape(box_sel, shape, shape_type, GEOM.ST_ONIN)
     return ids
 
 # --- A. LES VOLUMES (cellZones) ---
@@ -107,7 +104,7 @@ geompy.addToStudyInFather(Geometry_Finale, g_box_xmax, 'box_xmax')
 
 # 3. sphere (Reste inchangé car GetShapesOnSphere accepte encore les arguments)
 g_sphere = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["SOLID"])
-ids_sphere = geompy.GetShapesOnSphere(Geometry_Finale, geompy.MakeVertex(Center, Center, Center), R_sphere/2.0, geompy.ShapeType["SOLID"])
+ids_sphere = geompy.GetShapesOnSphere(Geometry_Finale, geompy.ShapeType["SOLID"], geompy.MakeVertex(Center, Center, Center), R_sphere, GEOM.ST_ONIN)
 geompy.UnionList(g_sphere, ids_sphere)
 geompy.addToStudyInFather(Geometry_Finale, g_sphere, 'sphere')
 
@@ -129,19 +126,19 @@ geompy.addToStudyInFather(Geometry_Finale, g_gas, 'gas')
 
 # 1. Interface Gas <-> Sphere
 g_int_gas_sphere = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
-ids_int_GS = geompy.GetShapesOnShape(Geometry_Finale, sphere, geompy.ShapeType["FACE"], geompy.GEOM.ST_ON)
+ids_int_GS = geompy.GetShapesOnShape(sphere, Geometry_Finale, geompy.ShapeType["FACE"], GEOM.ST_ON)
 geompy.UnionList(g_int_gas_sphere, ids_int_GS)
 geompy.addToStudyInFather(Geometry_Finale, g_int_gas_sphere, 'gas_to_sphere')
 
 # 2. Interface box_xmin <-> Gas
 g_int_xmin_gas = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
-ids_int_XG = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(0, 0, 0), eps)
+ids_int_XG = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.ShapeType["FACE"], geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(0, 0, 0), GEOM.ST_ON)
 geompy.UnionList(g_int_xmin_gas, ids_int_XG)
 geompy.addToStudyInFather(Geometry_Finale, g_int_xmin_gas, 'box_xmin_to_gas')
 
 # 3. Interface Gas <-> box_xmax
 g_int_xmax_gas = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
-ids_int_GX = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(GasCote, 0, 0), eps)
+ids_int_GX = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.ShapeType["FACE"], geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(GasCote, 0, 0), GEOM.ST_ON)
 geompy.UnionList(g_int_xmax_gas, ids_int_GX)
 geompy.addToStudyInFather(Geometry_Finale, g_int_xmax_gas, 'gas_to_box_xmax')
 
@@ -150,13 +147,13 @@ geompy.addToStudyInFather(Geometry_Finale, g_int_xmax_gas, 'gas_to_box_xmax')
 
 # 1. Extérieur Gauche
 g_ext_xmin = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
-ids_ext_xmin = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(-EpaisseurBox, 0, 0), eps)
+ids_ext_xmin = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.ShapeType["FACE"], geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(-EpaisseurBox, 0, 0), GEOM.ST_ON)
 geompy.UnionList(g_ext_xmin, ids_ext_xmin)
 geompy.addToStudyInFather(Geometry_Finale, g_ext_xmin, 'external_box_xmin')
 
 # 2. Extérieur Droit
 g_ext_xmax = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
-ids_ext_xmax = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(GasCote+EpaisseurBox, 0, 0), eps)
+ids_ext_xmax = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.ShapeType["FACE"], geompy.MakeVectorDXDYDZ(1, 0, 0), geompy.MakeVertex(GasCote+EpaisseurBox, 0, 0), GEOM.ST_ON)
 geompy.UnionList(g_ext_xmax, ids_ext_xmax)
 geompy.addToStudyInFather(Geometry_Finale, g_ext_xmax, 'external_box_xmax')
 
@@ -170,12 +167,9 @@ if salome.sg.hasDesktop():
 # =========================================================
 
 # 1. Définition du chemin de sortie
-# Attention : os.getcwd() dépend d'où vous lancez Salome. 
-# Si vous lancez le script depuis un fichier, on essaie de se baser dessus, 
-# sinon on suppose que vous êtes à la racine de votre cas OpenFOAM.
-current_dir = os.getcwd()
-# On remonte d'un cran (..) et on va dans constant/triSurface
-output_dir = os.path.join(current_dir, "..", "constant", "triSurface")
+# Utilisation du chemin absolu vers le cas OpenFOAM
+case_dir = "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite"
+output_dir = os.path.join(case_dir, "constant", "triSurface")
 
 # Création du dossier s'il n'existe pas
 if not os.path.exists(output_dir):
@@ -271,7 +265,7 @@ print(f"X : [{val_xMin:.4f}, {val_xMax:.4f}]")
 print(f"Y : [{val_yMin:.4f}, {val_yMax:.4f}]")
 
 # 3. Modification du fichier blockMesh_INI
-path_ini = "./../system/blockMesh_INI"
+path_ini = os.path.join(case_dir, "Geom_Salome_STLFiles", "Files_INI", "blockMeshDict_INI")
 
 if os.path.exists(path_ini):
     print(f"Configuration de {path_ini} ...")
@@ -317,34 +311,35 @@ ZProbe = Center
 # --- Sonde 1 : Milieu du Gaz coté CHAUD (Entre Mur Gauche et Sphère) ---
 # Le mur est à X=0, la sphère commence à (Center - R_sphere)
 XProbe = (Center - R_sphere) / 2.0
-sed("X1 Y1 Z1", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), "./../system/Probes_Solid") 
+path_probes = os.path.join(case_dir, "system", "Probes_Solid")
+sed("X1 Y1 Z1", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), path_probes) 
 Probe_1 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
 geompy.addToStudy(Probe_1, "Probe_1_Gas_Hot")
 
 # --- Sonde 2 : Interface Entrée Sphère ---
 # Juste un tout petit peu à l'intérieur de la sphère pour être sûr
 XProbe = Center - R_sphere + 0.001 
-sed("X2 Y2 Z2", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), "./../system/Probes_Solid") 
+sed("X2 Y2 Z2", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), path_probes) 
 Probe_2 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
 geompy.addToStudy(Probe_2, "Probe_2_Interface_In")
 
 # --- Sonde 3 : Cœur de la Sphère (Centre) ---
 XProbe = Center
-sed("X3 Y3 Z3", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), "./../system/Probes_Solid") 
+sed("X3 Y3 Z3", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), path_probes) 
 Probe_3 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
 geompy.addToStudy(Probe_3, "Probe_3_Center")
 
 # --- Sonde 4 : Interface Sortie Sphère ---
 # Juste un tout petit peu à l'intérieur
 XProbe = Center + R_sphere - 0.001
-sed("X4 Y4 Z4", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), "./../system/Probes_Solid") 
+sed("X4 Y4 Z4", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), path_probes) 
 Probe_4 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
 geompy.addToStudy(Probe_4, "Probe_4_Interface_Out")
 
 # --- Sonde 5 : Milieu du Gaz coté FROID (Entre Sphère et Mur Droit) ---
 # La sphère finit à (Center + R_sphere), le gaz finit à GasCote
 XProbe = (Center + R_sphere) + (GasCote - (Center + R_sphere)) / 2.0
-sed("X5 Y5 Z5", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), "./../system/Probes_Solid") 
+sed("X5 Y5 Z5", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), path_probes) 
 Probe_5 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
 geompy.addToStudy(Probe_5, "Probe_5_Gas_Cold")
 
@@ -479,13 +474,13 @@ loc_sphere_z = Center
 
 # Box XMIN (Mur Gauche) : Au milieu de l'épaisseur du mur
 # X entre -Epaisseur et 0
-loc_xmin_x = -EpaisseurBox / 2.0
+loc_xmin_x = -EpaisseurBox * 0.5 - 0.001  # Légèrement décalé pour éviter les faces de cellules
 loc_xmin_y = Center
 loc_xmin_z = Center
 
 # Box XMAX (Mur Droit) : Au milieu de l'épaisseur du mur
 # X entre GasCote et GasCote+Epaisseur
-loc_xmax_x = GasCote + (EpaisseurBox / 2.0)
+loc_xmax_x = GasCote + (EpaisseurBox * 0.5) + 0.001  # Légèrement décalé pour éviter les faces de cellules
 loc_xmax_y = Center
 loc_xmax_z = Center
 
@@ -502,7 +497,7 @@ print(f"Sphere : {loc_sphere_x:.4f} {loc_sphere_y:.4f} {loc_sphere_z:.4f}")
 print(f"Gas    : {loc_gas_x:.4f} {loc_gas_y:.4f} {loc_gas_z:.4f}")
 
 # B. Remplacement dans snappyHexMeshDict_INI
-path_snappy = "./../system/snappyHexMeshDict_INI"
+path_snappy = os.path.join(case_dir, "Geom_Salome_STLFiles", "Files_INI", "snappyHexMeshDict_INI")
 
 if os.path.exists(path_snappy):
     print(f"Mise à jour de {path_snappy} ...")

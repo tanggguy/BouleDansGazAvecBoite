@@ -38,7 +38,7 @@ LastWriteTime = max(NumNomDossiers)
 
 print("Dossier traité : ", LastWriteTime)
 
-BoiteCote = 0.1  # m, définit par la géométrie
+BoiteCote = XXXX  # m, définit par la géométrie
 
 TMaxCase = 873.15-273.15
 TMinCase = 293.15-273.15

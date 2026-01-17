@@ -12,7 +12,7 @@ Description
 
 #includeEtc "caseDicts/postProcessing/probes/probes.cfg"
 
-region sphere; 
+region solid;
 
 fields (T);
 
@@ -21,7 +21,6 @@ writeInterval   50;
 
 probeLocations
 (
-    // Le script Python va remplacer ces lignes via la commande sed
     (X1 Y1 Z1)
     (X2 Y2 Z2)
     (X3 Y3 Z3)

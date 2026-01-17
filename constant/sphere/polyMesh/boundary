@@ -1,7 +1,7 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  2512                                  |
+|  \\    /   O peration     | Version:  2506                                  |
 |   \\  /    A nd           | Website:  www.openfoam.com                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
@@ -11,58 +11,22 @@ FoamFile
     format      binary;
     arch        "LSB;label=32;scalar=64";
     class       polyBoundaryMesh;
-    location    "constant/solid/polyMesh";
+    location    "constant/sphere/polyMesh";
     object      boundary;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-7
+1
 (
-    minX
-    {
-        type            patch;
-        nFaces          1080;
-        startFace       848100;
-    }
-    maxX
-    {
-        type            patch;
-        nFaces          1080;
-        startFace       849180;
-    }
-    minY
-    {
-        type            patch;
-        nFaces          1080;
-        startFace       850260;
-    }
-    maxY
-    {
-        type            patch;
-        nFaces          1080;
-        startFace       851340;
-    }
-    bottom
-    {
-        type            patch;
-        nFaces          2632;
-        startFace       852420;
-    }
-    top
-    {
-        type            patch;
-        nFaces          6400;
-        startFace       855052;
-    }
-    solid_to_water
+    sphere_to_gas
     {
         type            mappedWall;
         inGroups        2(wall mappedPatch);
-        nFaces          35092;
-        startFace       861452;
+        nFaces          2688;
+        startFace       30471;
         sampleMode      nearestPatchFace;
-        sampleRegion    water;
-        samplePatch     water_to_solid;
+        sampleRegion    gas;
+        samplePatch     gas_to_sphere;
     }
 )
 

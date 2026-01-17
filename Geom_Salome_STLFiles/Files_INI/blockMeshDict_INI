@@ -17,21 +17,21 @@ FoamFile
 convertToMeters 1;
 
 // Cote du cube [m]
-BoiteCote XXX;    
+BoiteCote 0.1;    
 
 //  Taille de maille Level 0 suivant x y et z
-lx PasMailleX;    
-ly PasMailleY;    
-lz PasMailleZ;    
+lx 0.005;    
+ly 0.005;    
+lz 0.005;    
 
 //  Boite blockMesh définie avec un débord de 1cm
-xMin MIN_X;
-yMin MIN_Y;
-zMin MIN_Z;
+xMin -0.01500;
+yMin -0.00500;
+zMin -0.00500;
 
-xMax MAX_X;
-yMax MAX_Y;
-zMax MAX_Z;
+xMax 0.11500;
+yMax 0.10500;
+zMax 0.10500;
 
 xcells #calc "round(($xMax-($xMin))/$lx)";
 ycells #calc "round(($yMax-($yMin))/$ly)";

@@ -5,7 +5,13 @@ cd ${0%/*} || exit 1    # Run from this directory
 # Source tutorial run functions
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
-#  Ajustement des fichiers 
+#  Definition de la geometrie - DOIT être exécuté EN PREMIER
+#  pour modifier les fichiers INI avant de les copier
+cd Geom_Salome_STLFiles
+./Allrun_Geo_Salome_STLFiles
+cd ..
+
+#  Ajustement des fichiers (APRÈS exécution de Salome)
 cp -r Geom_Salome_STLFiles/Files_INI/controlDict_INI system/controlDict
 cp -r Geom_Salome_STLFiles/Files_INI/blockMeshDict_INI system/blockMeshDict
 cp -r Geom_Salome_STLFiles/Files_INI/snappyHexMeshDict_INI system/snappyHexMeshDict
@@ -16,12 +22,6 @@ cp -r Geom_Salome_STLFiles/Files_INI/T_Average_outlet system/T_Average_outlet
 cp Geom_Salome_STLFiles/Graph_et_Probes_INI/* system/
 
 cp Geom_Salome_STLFiles/Scripts_Plots_INI/* case_treatment/
-
-
-#  Definition de la geometrie
-cd Geom_Salome_STLFiles
-./Allrun_Geo_Salome_STLFiles
-cd ..
 
 #./Allmesh.Nolayers  #
 ./Allmesh.layers      
