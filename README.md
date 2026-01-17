@@ -1,4 +1,4 @@
-./Allclean && ./Allrun
+./Allclean && ./Allrun && paraFoam
 
 ./Allclean && ./Allmesh.layers
 

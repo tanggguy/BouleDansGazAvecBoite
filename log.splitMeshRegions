@@ -9,9 +9,9 @@ Build  : _615aae61-20250627 OPENFOAM=2506 version=2506
 Arch   : "LSB;label=32;scalar=64"
 Exec   : splitMeshRegions -parallel -cellZones -overwrite
 Date   : Jan 17 2026
-Time   : 13:23:15
+Time   : 16:16:29
 Host   : tanguy-VMware-Virtual-Platform
-PID    : 10617
+PID    : 20221
 I/O    : uncollated
 Case   : /home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite
 nProcs : 4
@@ -48,25 +48,25 @@ Writing region per cell as volScalarField to "/home/tanguy/OpenFOAM/tanguy-v2506
 
 Region	Cells
 ------	-----
-0	17816
-1	10449
-2	2816
-3	2816
+0	7088
+1	2256
+2	800
+3	800
 
 Region	Zone	Name
 ------	----	----
 0	(0)	gas
 1	(1)	sphere
-2	(3)	box_xmax
-3	(2)	box_xmin
+2	(2)	box_xmin
+3	(3)	box_xmax
 
 Sizes of interfaces between regions:
 
 Interface	Region	Region	Faces
 ---------	------	------	-----
-0		0	3	832
-1		0	1	2694
-2		0	2	832
+0		0	3	400
+1		0	1	674
+2		0	2	400
 
 Reading volScalarField: cellToRegion
 
@@ -76,15 +76,15 @@ Adding patches
 
 Adding patches
 
-For interface between region gas and box_xmin added patches
-    5	gas_to_box_xmin
-    6	box_xmin_to_gas
+For interface between region gas and box_xmax added patches
+    5	gas_to_box_xmax
+    6	box_xmax_to_gas
 For interface between region gas and sphere added patches
     7	gas_to_sphere
     8	sphere_to_gas
-For interface between region gas and box_xmax added patches
-    9	gas_to_box_xmax
-    10	box_xmax_to_gas
+For interface between region gas and box_xmin added patches
+    9	gas_to_box_xmin
+    10	box_xmin_to_gas
 
 Region 0
 -------- 
@@ -114,7 +114,7 @@ Writing map boundaryRegionAddressing from region1 boundary back to base mesh.
 
 Region 2
 -------- 
-Creating mesh for region 2 box_xmax
+Creating mesh for region 2 box_xmin
 Mapping fields
 Mapping field cellToRegion
 Deleting empty patches
@@ -127,7 +127,7 @@ Writing map boundaryRegionAddressing from region2 boundary back to base mesh.
 
 Region 3
 -------- 
-Creating mesh for region 3 box_xmin
+Creating mesh for region 3 box_xmax
 Mapping fields
 Mapping field cellToRegion
 Deleting empty patches

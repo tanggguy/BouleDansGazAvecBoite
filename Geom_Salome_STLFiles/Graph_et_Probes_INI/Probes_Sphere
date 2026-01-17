@@ -1,0 +1,36 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      probes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Sondes de température dans la sphère (solide)
+// Placées le long de l'axe X au centre (Y=Z=Center)
+
+#includeEtc "caseDicts/postProcessing/probes/probes.cfg"
+
+region sphere;
+
+fields (T);
+
+writeControl    timeStep;
+writeInterval   50;
+
+probeLocations
+(
+    (X_PROBE_SPHERE_1 Y_PROBE_SPHERE Z_PROBE_SPHERE)  // Interface entrée (côté chaud)
+    (X_PROBE_SPHERE_2 Y_PROBE_SPHERE Z_PROBE_SPHERE)  // Centre de la sphère
+    (X_PROBE_SPHERE_3 Y_PROBE_SPHERE Z_PROBE_SPHERE)  // Interface sortie (côté froid)
+);
+
+// ************************************************************************* //

@@ -9,9 +9,9 @@ Build  : _615aae61-20250627 OPENFOAM=2506 version=2506
 Arch   : "LSB;label=32;scalar=64"
 Exec   : blockMesh
 Date   : Jan 17 2026
-Time   : 13:23:00
+Time   : 16:16:19
 Host   : tanguy-VMware-Virtual-Platform
-PID    : 10173
+PID    : 19767
 I/O    : uncollated
 Case   : /home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite
 nProcs : 1

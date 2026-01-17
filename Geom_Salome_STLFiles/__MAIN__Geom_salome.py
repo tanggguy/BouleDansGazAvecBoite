@@ -157,6 +157,33 @@ ids_ext_xmax = geompy.GetShapesOnPlaneWithLocation(Geometry_Finale, geompy.Shape
 geompy.UnionList(g_ext_xmax, ids_ext_xmax)
 geompy.addToStudyInFather(Geometry_Finale, g_ext_xmax, 'external_box_xmax')
 
+# --- D. FACES INTERNES DES BOXES (pour éviter le chevauchement avec les faces externes) ---
+# Ces groupes contiennent toutes les faces des boxes SAUF les faces externes
+# C'est nécessaire car sinon box_xmin.stl et external_box_xmin.stl contiennent les mêmes triangles
+# IMPORTANT: On doit comparer les IDs des shapes, pas les objets GEOM eux-mêmes
+
+# 1. Faces internes de box_xmin (toutes les faces sauf external_box_xmin)
+# On récupère d'abord toutes les faces du volume box_xmin
+all_faces_box_xmin = geompy.GetShapesOnShape(box_xmin, Geometry_Finale, geompy.ShapeType["FACE"], GEOM.ST_ONIN)
+# On récupère les IDs des faces externes pour pouvoir les comparer
+ids_ext_xmin_set = set(geompy.GetSubShapeID(Geometry_Finale, f) for f in ids_ext_xmin)
+# On filtre les faces internes en comparant les IDs
+ids_internal_xmin = [f for f in all_faces_box_xmin if geompy.GetSubShapeID(Geometry_Finale, f) not in ids_ext_xmin_set]
+g_box_xmin_faces = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
+geompy.UnionList(g_box_xmin_faces, ids_internal_xmin)
+geompy.addToStudyInFather(Geometry_Finale, g_box_xmin_faces, 'box_xmin_faces')
+
+# 2. Faces internes de box_xmax (toutes les faces sauf external_box_xmax)
+all_faces_box_xmax = geompy.GetShapesOnShape(box_xmax, Geometry_Finale, geompy.ShapeType["FACE"], GEOM.ST_ONIN)
+ids_ext_xmax_set = set(geompy.GetSubShapeID(Geometry_Finale, f) for f in ids_ext_xmax)
+ids_internal_xmax = [f for f in all_faces_box_xmax if geompy.GetSubShapeID(Geometry_Finale, f) not in ids_ext_xmax_set]
+g_box_xmax_faces = geompy.CreateGroup(Geometry_Finale, geompy.ShapeType["FACE"])
+geompy.UnionList(g_box_xmax_faces, ids_internal_xmax)
+geompy.addToStudyInFather(Geometry_Finale, g_box_xmax_faces, 'box_xmax_faces')
+
+print(f"box_xmin: {len(all_faces_box_xmin)} faces totales, {len(ids_internal_xmin)} faces internes exportées (excluant {len(ids_ext_xmin)} face(s) externe(s))")
+print(f"box_xmax: {len(all_faces_box_xmax)} faces totales, {len(ids_internal_xmax)} faces internes exportées (excluant {len(ids_ext_xmax)} face(s) externe(s))")
+
 # Rafraîchir
 if salome.sg.hasDesktop():
     salome.sg.updateObjBrowser()
@@ -197,12 +224,16 @@ def export_stl(geom_obj, filename):
 print("--- Export des Volumes (Regions) ---")
 export_stl(g_gas, "gas.stl")
 export_stl(g_sphere, "sphere.stl")
-export_stl(g_box_xmin, "box_xmin.stl")
-export_stl(g_box_xmax, "box_xmax.stl")
+
+# IMPORTANT: On exporte les FACES internes des boxes (pas les volumes entiers)
+# Cela évite que box_xmin.stl contienne les mêmes faces que external_box_xmin.stl
+print("--- Export des Faces des Boxes (sans les faces externes) ---")
+export_stl(g_box_xmin_faces, "box_xmin.stl")  # Faces internes uniquement
+export_stl(g_box_xmax_faces, "box_xmax.stl")  # Faces internes uniquement
 
 # 4. Export des FACES EXTERNES (Pour les Patches spécifiques)
-# Utile pour forcer des conditions limites précises ou des raffinements locaux
-print("--- Export des Faces (Patches) ---")
+# Ces faces sont exportées séparément pour avoir des conditions limites précises
+print("--- Export des Faces Externes (Conditions aux limites) ---")
 export_stl(g_ext_xmin, "external_box_xmin.stl")
 export_stl(g_ext_xmax, "external_box_xmax.stl")
 
@@ -300,157 +331,203 @@ else:
 
 
 ###########################################################################################
-#  Definition des sondes (PROBES)
-#  Objectif : Mesurer le gradient thermique le long de l'axe X (traversant la sphère)
+#  CONFIGURATION DU POST-TRAITEMENT
+#  Copie et paramétrage des fichiers templates pour:
+#  - Sondes (Probes) dans sphere et gas
+#  - Profils de température le long de X (XGraph)
+#  - Coupes 2D (Slices)
+#  - Scripts Python de visualisation
 ###########################################################################################
 
-# On se place au milieu de la hauteur et de la profondeur pour taper dans la sphère
+import shutil
+
+# Dossiers sources (templates)
+graph_probes_ini = os.path.join(case_dir, "Geom_Salome_STLFiles", "Graph_et_Probes_INI")
+scripts_ini = os.path.join(case_dir, "Geom_Salome_STLFiles", "Scripts_Plots_INI")
+
+# Dossiers destinations
+system_dir = os.path.join(case_dir, "system")
+case_treatment_dir = os.path.join(case_dir, "case_treatment")
+
+# Créer case_treatment s'il n'existe pas
+if not os.path.exists(case_treatment_dir):
+    os.makedirs(case_treatment_dir)
+
+print("\\n" + "="*70)
+print("CONFIGURATION DU POST-TRAITEMENT")
+print("="*70)
+
+# =========================================================================
+# 1. SONDES DE TEMPERATURE (PROBES)
+# =========================================================================
+print("\\n--- 1. Configuration des Sondes (Probes) ---")
+
+# Coordonnées Y et Z (centre de la géométrie)
 YProbe = Center
 ZProbe = Center
 
-# --- Sonde 1 : Milieu du Gaz coté CHAUD (Entre Mur Gauche et Sphère) ---
-# Le mur est à X=0, la sphère commence à (Center - R_sphere)
-XProbe = (Center - R_sphere) / 2.0
-path_probes = os.path.join(case_dir, "system", "Probes_Solid")
-sed("X1 Y1 Z1", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), path_probes) 
-Probe_1 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
-geompy.addToStudy(Probe_1, "Probe_1_Gas_Hot")
+# --- Sondes dans la SPHERE (3 points) ---
+# Sonde 1: Interface entrée (côté chaud)
+X_probe_sphere_1 = Center - R_sphere + 0.001
+# Sonde 2: Centre de la sphère
+X_probe_sphere_2 = Center
+# Sonde 3: Interface sortie (côté froid)
+X_probe_sphere_3 = Center + R_sphere - 0.001
 
-# --- Sonde 2 : Interface Entrée Sphère ---
-# Juste un tout petit peu à l'intérieur de la sphère pour être sûr
-XProbe = Center - R_sphere + 0.001 
-sed("X2 Y2 Z2", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), path_probes) 
-Probe_2 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
-geompy.addToStudy(Probe_2, "Probe_2_Interface_In")
+path_probes_sphere_ini = os.path.join(graph_probes_ini, "Probes_Sphere")
+path_probes_sphere = os.path.join(system_dir, "Probes_Sphere")
+shutil.copy(path_probes_sphere_ini, path_probes_sphere)
 
-# --- Sonde 3 : Cœur de la Sphère (Centre) ---
-XProbe = Center
-sed("X3 Y3 Z3", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), path_probes) 
-Probe_3 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
-geompy.addToStudy(Probe_3, "Probe_3_Center")
+sed("X_PROBE_SPHERE_1", f"{X_probe_sphere_1:.5f}", path_probes_sphere)
+sed("X_PROBE_SPHERE_2", f"{X_probe_sphere_2:.5f}", path_probes_sphere)
+sed("X_PROBE_SPHERE_3", f"{X_probe_sphere_3:.5f}", path_probes_sphere)
+sed("Y_PROBE_SPHERE", f"{YProbe:.5f}", path_probes_sphere)
+sed("Z_PROBE_SPHERE", f"{ZProbe:.5f}", path_probes_sphere)
+print(f"  -> Probes_Sphere: 3 sondes configurées")
 
-# --- Sonde 4 : Interface Sortie Sphère ---
-# Juste un tout petit peu à l'intérieur
-XProbe = Center + R_sphere - 0.001
-sed("X4 Y4 Z4", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), path_probes) 
-Probe_4 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
-geompy.addToStudy(Probe_4, "Probe_4_Interface_Out")
+# Visualisation dans Salome
+Probe_Sphere_1 = geompy.MakeVertex(X_probe_sphere_1, YProbe, ZProbe)
+geompy.addToStudy(Probe_Sphere_1, "Probe_Sphere_1_In")
+Probe_Sphere_2 = geompy.MakeVertex(X_probe_sphere_2, YProbe, ZProbe)
+geompy.addToStudy(Probe_Sphere_2, "Probe_Sphere_2_Center")
+Probe_Sphere_3 = geompy.MakeVertex(X_probe_sphere_3, YProbe, ZProbe)
+geompy.addToStudy(Probe_Sphere_3, "Probe_Sphere_3_Out")
 
-# --- Sonde 5 : Milieu du Gaz coté FROID (Entre Sphère et Mur Droit) ---
-# La sphère finit à (Center + R_sphere), le gaz finit à GasCote
-XProbe = (Center + R_sphere) + (GasCote - (Center + R_sphere)) / 2.0
-sed("X5 Y5 Z5", str(round(XProbe,4))+" "+str(round(YProbe,4))+" "+str(round(ZProbe,4)), path_probes) 
-Probe_5 = geompy.MakeVertex(XProbe, YProbe, ZProbe)
-geompy.addToStudy(Probe_5, "Probe_5_Gas_Cold")
+# --- Sondes dans le GAZ (2 points) ---
+# Sonde 1: Milieu du gaz côté chaud (entre box_xmin et sphère)
+X_probe_gas_1 = (Center - R_sphere) / 2.0
+# Sonde 2: Milieu du gaz côté froid (entre sphère et box_xmax)
+X_probe_gas_2 = (Center + R_sphere) + (GasCote - (Center + R_sphere)) / 2.0
 
-# (Optionnel) Une sonde "Témoin" loin de la sphère pour voir la convection libre ?
-# Si vous voulez voir si la chaleur monte (Convection), vous pourriez en mettre une en haut du gaz :
-# Probe_6 = geompy.MakeVertex(XProbe, GasCote*0.9, Center)
-# ###########################################################################################
-# #  Defintion de Graph_Centre
+path_probes_gas_ini = os.path.join(graph_probes_ini, "Probes_Gas")
+path_probes_gas = os.path.join(system_dir, "Probes_Gas")
+shutil.copy(path_probes_gas_ini, path_probes_gas)
 
-# X1 = BoiteCote/2
-# Y1 = BoiteCote/2
-# Z1 = BoiteCote
+sed("X_PROBE_GAS_1", f"{X_probe_gas_1:.5f}", path_probes_gas)
+sed("X_PROBE_GAS_2", f"{X_probe_gas_2:.5f}", path_probes_gas)
+sed("Y_PROBE_GAS", f"{YProbe:.5f}", path_probes_gas)
+sed("Z_PROBE_GAS", f"{ZProbe:.5f}", path_probes_gas)
+print(f"  -> Probes_Gas: 2 sondes configurées")
 
-# X2 = BoiteCote/2
-# Y2 = BoiteCote/2
-# Z2 = 0.
+# Visualisation dans Salome
+Probe_Gas_1 = geompy.MakeVertex(X_probe_gas_1, YProbe, ZProbe)
+geompy.addToStudy(Probe_Gas_1, "Probe_Gas_1_Hot")
+Probe_Gas_2 = geompy.MakeVertex(X_probe_gas_2, YProbe, ZProbe)
+geompy.addToStudy(Probe_Gas_2, "Probe_Gas_2_Cold")
 
-# sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_Centre_Solid") 
-# sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_Centre_Water") 
+# =========================================================================
+# 2. PROFILS DE TEMPERATURE LE LONG DE X (XGraph)
+# =========================================================================
+print("\\n--- 2. Configuration des Profils T(X) ---")
 
-# sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_Centre_Solid") 
-# sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_Centre_Water") 
+# Coordonnées Y et Z du profil (centre)
+Y_CENTER = Center
+Z_CENTER = Center
 
-# P_1_ZGraph_Centre_Solid = geompy.MakeVertex(X1, Y1, Z1)
-# geompy.addToStudy(P_1_ZGraph_Centre_Solid, "P_1_ZGraph_Centre_Solid")
-# P_2_ZGraph_Centre_Solid = geompy.MakeVertex(X2, Y2, Z2)
-# geompy.addToStudy(P_2_ZGraph_Centre_Solid, "P_2_ZGraph_Centre_Solid")
+# --- Profil dans BOX_XMIN ---
+X_start_boxxmin = -EpaisseurBox + 0.0001
+X_end_boxxmin = -0.0001
 
-# Graph_Centre = geompy.MakeLineTwoPnt(P_1_ZGraph_Centre_Solid, P_2_ZGraph_Centre_Solid)
-# geompy.addToStudy(Graph_Centre, "Graph_Centre")
+path_xgraph_boxxmin_ini = os.path.join(graph_probes_ini, "XGraph_BoxXmin")
+path_xgraph_boxxmin = os.path.join(system_dir, "XGraph_BoxXmin")
+shutil.copy(path_xgraph_boxxmin_ini, path_xgraph_boxxmin)
 
-# ###########################################################################################
-# #  Defintion de Graph_CentreTubeSortie
+sed("X_START_BOXXMIN", f"{X_start_boxxmin:.5f}", path_xgraph_boxxmin)
+sed("X_END_BOXXMIN", f"{X_end_boxxmin:.5f}", path_xgraph_boxxmin)
+sed("Y_CENTER", f"{Y_CENTER:.5f}", path_xgraph_boxxmin)
+sed("Z_CENTER", f"{Z_CENTER:.5f}", path_xgraph_boxxmin)
+print(f"  -> XGraph_BoxXmin: X=[{X_start_boxxmin:.4f}, {X_end_boxxmin:.4f}]")
 
-# X1 = BoiteCote/2 + TubeRayonCourb
-# Y1 = BoiteCote/2
-# Z1 = BoiteCote
+# --- Profil dans GAS ---
+X_start_gas = 0.0001
+X_end_gas = GasCote - 0.0001
 
-# X2 = BoiteCote/2 + TubeRayonCourb
-# Y2 = BoiteCote/2
-# Z2 = 0.
+path_xgraph_gas_ini = os.path.join(graph_probes_ini, "XGraph_Gas")
+path_xgraph_gas = os.path.join(system_dir, "XGraph_Gas")
+shutil.copy(path_xgraph_gas_ini, path_xgraph_gas)
 
-# sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_CentreTubeSortie_Solid") 
-# sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_CentreTubeSortie_Water") 
+sed("X_START_GAS", f"{X_start_gas:.5f}", path_xgraph_gas)
+sed("X_END_GAS", f"{X_end_gas:.5f}", path_xgraph_gas)
+sed("Y_CENTER", f"{Y_CENTER:.5f}", path_xgraph_gas)
+sed("Z_CENTER", f"{Z_CENTER:.5f}", path_xgraph_gas)
+print(f"  -> XGraph_Gas: X=[{X_start_gas:.4f}, {X_end_gas:.4f}]")
 
-# sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_CentreTubeSortie_Solid") 
-# sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_CentreTubeSortie_Water") 
+# --- Profil dans SPHERE ---
+X_start_sphere = Center - R_sphere + 0.0001
+X_end_sphere = Center + R_sphere - 0.0001
 
-# P_1_ZGraph_CentreTube = geompy.MakeVertex(X1, Y1, Z1)
-# geompy.addToStudy(P_1_ZGraph_CentreTube, "P_1_ZGraph_CentreTube")
-# P_2_ZGraph_CentreTube = geompy.MakeVertex(X2, Y2, Z2)
-# geompy.addToStudy(P_2_ZGraph_CentreTube, "P_2_ZGraph_CentreTube")
+path_xgraph_sphere_ini = os.path.join(graph_probes_ini, "XGraph_Sphere")
+path_xgraph_sphere = os.path.join(system_dir, "XGraph_Sphere")
+shutil.copy(path_xgraph_sphere_ini, path_xgraph_sphere)
 
-# Graph_CentreTube = geompy.MakeLineTwoPnt(P_1_ZGraph_CentreTube, P_2_ZGraph_CentreTube)
-# geompy.addToStudy(Graph_CentreTube, "Graph_CentreTube")
+sed("X_START_SPHERE", f"{X_start_sphere:.5f}", path_xgraph_sphere)
+sed("X_END_SPHERE", f"{X_end_sphere:.5f}", path_xgraph_sphere)
+sed("Y_CENTER", f"{Y_CENTER:.5f}", path_xgraph_sphere)
+sed("Z_CENTER", f"{Z_CENTER:.5f}", path_xgraph_sphere)
+print(f"  -> XGraph_Sphere: X=[{X_start_sphere:.4f}, {X_end_sphere:.4f}]")
 
+# --- Profil dans BOX_XMAX ---
+X_start_boxxmax = GasCote + 0.0001
+X_end_boxxmax = GasCote + EpaisseurBox - 0.0001
 
-# ###########################################################################################
-# #  Defintion de Graph_CoteSortie_Solid
+path_xgraph_boxxmax_ini = os.path.join(graph_probes_ini, "XGraph_BoxXmax")
+path_xgraph_boxxmax = os.path.join(system_dir, "XGraph_BoxXmax")
+shutil.copy(path_xgraph_boxxmax_ini, path_xgraph_boxxmax)
 
-# X1s = BoiteCote/2 - TubeRayonCourb - TubeD
-# Y1 = BoiteCote/2
-# Z1 = BoiteCote
+sed("X_START_BOXXMAX", f"{X_start_boxxmax:.5f}", path_xgraph_boxxmax)
+sed("X_END_BOXXMAX", f"{X_end_boxxmax:.5f}", path_xgraph_boxxmax)
+sed("Y_CENTER", f"{Y_CENTER:.5f}", path_xgraph_boxxmax)
+sed("Z_CENTER", f"{Z_CENTER:.5f}", path_xgraph_boxxmax)
+print(f"  -> XGraph_BoxXmax: X=[{X_start_boxxmax:.4f}, {X_end_boxxmax:.4f}]")
 
-# X2s = (BoiteCote/2 - TubeRayonCourb - TubeD/2)/2
-# Y2 = BoiteCote/2
-# Z2 = 0.
+# Visualiser le profil dans Salome
+P_start = geompy.MakeVertex(-EpaisseurBox, Y_CENTER, Z_CENTER)
+P_end = geompy.MakeVertex(GasCote + EpaisseurBox, Y_CENTER, Z_CENTER)
+XProfile_Line = geompy.MakeLineTwoPnt(P_start, P_end)
+geompy.addToStudy(XProfile_Line, "XProfile_Line")
 
-# sed("X1 Y1 Z1", str(round(X1s,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_CoteSortie_Solid") 
+# =========================================================================
+# 3. COUPES 2D (SLICES)
+# =========================================================================
+print("\\n--- 3. Configuration des Coupes 2D (Slices) ---")
 
-# sed("X2 Y2 Z2", str(round(X2s,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_CoteSortie_Solid") 
+# Slice Y = Center (pour la région gas uniquement)
+path_slice_y_ini = os.path.join(graph_probes_ini, "Slice_YCenter")
+path_slice_y = os.path.join(system_dir, "Slice_YCenter_Gas")
+shutil.copy(path_slice_y_ini, path_slice_y)
 
+sed("REGION_NAME", "gas", path_slice_y)
+sed("Y_CENTER", f"{Y_CENTER:.5f}", path_slice_y)
+print(f"  -> Slice_YCenter_Gas: Y={Y_CENTER:.4f}")
 
-# P_1_ZGraph_CoteSortie = geompy.MakeVertex(X1s, Y1, Z1)
-# geompy.addToStudy(P_1_ZGraph_CoteSortie, "P_1_ZGraph_CoteSortie")
-# P_2_ZGraph_CoteSortie = geompy.MakeVertex(X2s, Y2, Z2)
-# geompy.addToStudy(P_2_ZGraph_CoteSortie, "P_2_ZGraph_CoteSortie")
+# Slice Z = Center (pour la région gas uniquement)
+path_slice_z_ini = os.path.join(graph_probes_ini, "Slice_ZCenter")
+path_slice_z = os.path.join(system_dir, "Slice_ZCenter_Gas")
+shutil.copy(path_slice_z_ini, path_slice_z)
 
-# Graph_CoteSortie = geompy.MakeLineTwoPnt(P_1_ZGraph_CoteSortie, P_2_ZGraph_CoteSortie)
-# geompy.addToStudy(Graph_CoteSortie, "Graph_CoteSortie")
+sed("REGION_NAME", "gas", path_slice_z)
+sed("Z_CENTER", f"{Z_CENTER:.5f}", path_slice_z)
+print(f"  -> Slice_ZCenter_Gas: Z={Z_CENTER:.4f}")
 
+# =========================================================================
+# 4. COPIE DES SCRIPTS PYTHON
+# =========================================================================
+print("\\n--- 4. Copie des Scripts Python de Visualisation ---")
 
-# ###########################################################################################
-# #  Defintion de Graph_CoteEntree_Solid
+scripts_to_copy = ["Plot_Probes.py", "Plot_XProfile.py", "Plot_HeatFlux.py", "Plot_Residus.py"]
 
-# X1 = BoiteCote - X1s
-# Y1 = BoiteCote/2
-# Z1 = BoiteCote
+for script in scripts_to_copy:
+    src = os.path.join(scripts_ini, script)
+    dst = os.path.join(case_treatment_dir, script)
+    if os.path.exists(src):
+        shutil.copy(src, dst)
+        print(f"  -> {script} copié vers case_treatment/")
+    else:
+        print(f"  ATTENTION: {script} non trouvé dans Scripts_Plots_INI/")
 
-# X2 = BoiteCote - X2s
-# Y2 = BoiteCote/2
-# Z2 = 0.
-
-# sed("X1 Y1 Z1", str(round(X1,2))+" "+str(round(Y1,2))+" "+str(round(Z1,2)), "./../system/ZGraph_CoteEntree_Solid") 
-
-# sed("X2 Y2 Z2", str(round(X2,2))+" "+str(round(Y2,2))+" "+str(round(Z2,2)), "./../system/ZGraph_CoteEntree_Solid") 
-
-
-# P_1_ZGraph_CoteEntree = geompy.MakeVertex(X1, Y1, Z1)
-# geompy.addToStudy(P_1_ZGraph_CoteEntree, "P_1_ZGraph_CoteEntree")
-# P_2_ZGraph_CoteEntree = geompy.MakeVertex(X2, Y2, Z2)
-# geompy.addToStudy(P_2_ZGraph_CoteEntree, "P_2_ZGraph_CoteEntree")
-
-# Graph_CoteEntree = geompy.MakeLineTwoPnt(P_1_ZGraph_CoteEntree, P_2_ZGraph_CoteEntree)
-# geompy.addToStudy(Graph_CoteEntree, "Graph_CoteEntree")
-
-
-# ###########################################################################################
-# #  Defintion des bornes de l'axe abscisses pour le graphique des profils T
-
-# sed("BoiteCote = XXXX", "BoiteCote = " + str(round(BoiteCote,4)), "./../case_treatment/Plot_Graph_CSV.py") 
+print("\\n" + "="*70)
+print("POST-TRAITEMENT CONFIGURÉ AVEC SUCCÈS")
+print("="*70) 
 
 
 

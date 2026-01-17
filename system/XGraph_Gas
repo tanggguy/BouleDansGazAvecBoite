@@ -1,0 +1,46 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      singleGraph;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Profil de température le long de X dans le gaz
+// Ligne passant par le centre (Y=Z=Center)
+// Note: Cette ligne traverse le gaz des deux côtés de la sphère
+
+type            sets;
+libs            (sampling);
+
+region          gas;
+
+writeControl    writeTime;
+
+interpolationScheme cellPoint;
+
+setFormat       csv;
+
+sets
+(
+    line
+    {
+        type    lineUniform;
+        axis    x;
+        start   (0.00010 0.05000 0.05000);
+        end     (0.09990 0.05000 0.05000);
+        nPoints 100;
+    }
+);
+
+fields          (T);
+
+// ************************************************************************* //

@@ -1,0 +1,45 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      singleGraph;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Profil de température le long de X dans box_xmax (isolant côté froid)
+// Ligne passant par le centre (Y=Z=Center)
+
+type            sets;
+libs            (sampling);
+
+region          box_xmax;
+
+writeControl    writeTime;
+
+interpolationScheme cellPoint;
+
+setFormat       csv;
+
+sets
+(
+    line
+    {
+        type    lineUniform;
+        axis    x;
+        start   (0.10010 0.05000 0.05000);
+        end     (0.10990 0.05000 0.05000);
+        nPoints 20;
+    }
+);
+
+fields          (T);
+
+// ************************************************************************* //

@@ -29,7 +29,7 @@ castellatedMeshControls
     nCellsBetweenLevels 3;
     resolveFeatureAngle 30;
     allowFreeStandingZoneFaces true;
-    features        ( { file "gas.eMesh" ; level 1 ; } { file "sphere.eMesh" ; level 1 ; } { file "box_xmax.eMesh" ; level 1 ; } { file "box_xmin.eMesh" ; level 1 ; } { file "external_box_xmax.eMesh" ; level 1 ; } { file "external_box_xmin.eMesh" ; level 1 ; } );
+    features        ( { file "gas.eMesh" ; level 0 ; } { file "sphere.eMesh" ; level 0 ; } { file "box_xmax.eMesh" ; level 0 ; } { file "box_xmin.eMesh" ; level 0 ; } { file "external_box_xmax.eMesh" ; level 0 ; } { file "external_box_xmin.eMesh" ; level 0 ; } );
     refinementSurfaces
     {
         gas

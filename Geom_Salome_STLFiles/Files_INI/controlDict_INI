@@ -1,7 +1,7 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  2412                                  |
+|  \\    /   O peration     | Version:  v2506                                 |
 |   \\  /    A nd           | Website:  www.openfoam.com                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
@@ -23,13 +23,13 @@ startTime       0;
 
 stopAt          endTime;
 
-endTime         40; //3000
+endTime         200;
 
 deltaT          0.1;
 
 writeControl    adjustableRunTime;
 
-writeInterval   10;
+writeInterval   50;
 
 purgeWrite      0;
 
@@ -45,67 +45,110 @@ timePrecision   6;
 
 runTimeModifiable true;
 
-
 maxCo           5.0;
 
 maxDi           100.0;
 
-
-adjustTimeStep  on; // Iden CHT Shell and Tubes Heat Exchanger
+adjustTimeStep  on;
 
 
 functions
 {
-
-    #includeFunc "Probes_Solid"
-  
-    HeatFlux_water
+    // ============================================================
+    // SONDES DE TEMPERATURE (Probes)
+    // ============================================================
+    
+    #includeFunc "Probes_Sphere"
+    #includeFunc "Probes_Gas"
+    
+    // ============================================================
+    // PROFILS DE TEMPERATURE le long de X (singleGraph)
+    // ============================================================
+    
+    #includeFunc "XGraph_Sphere"
+    #includeFunc "XGraph_Gas"
+    #includeFunc "XGraph_BoxXmin"
+    #includeFunc "XGraph_BoxXmax"
+    
+    // ============================================================
+    // COUPES 2D (Slices) - Pour visualisation ParaView
+    // ============================================================
+    
+    #includeFunc "Slice_YCenter_Gas"
+    #includeFunc "Slice_ZCenter_Gas"
+    
+    // ============================================================
+    // FLUX DE CHALEUR (Heat Flux)
+    // ============================================================
+    
+    // Flux sur la face externe chaude (entrée de chaleur)
+    HeatFlux_box_xmin_external
     {
         type            wallHeatFlux;
         libs            (fieldFunctionObjects);
-        patches         (water_to_solid);
-        region          water;
-        qr              qr;
+        patches         (external_box_xmin);
+        region          box_xmin;
         executeControl  writeTime;
-        executeInterval 1;
         writeControl    writeTime;
-        writeInterval   1;
     }
 
-    HeatFlux_solid
+    // Flux sur la face externe froide (sortie de chaleur)
+    HeatFlux_box_xmax_external
     {
         type            wallHeatFlux;
         libs            (fieldFunctionObjects);
-        patches         (solid_to_water);
-        region          solid;
-        qr              qr;
+        patches         (external_box_xmax);
+        region          box_xmax;
         executeControl  writeTime;
-        executeInterval 1;
         writeControl    writeTime;
-        writeInterval   1;
     }
 
+    // Flux sur l'interface gaz-sphère (côté gaz)
+    HeatFlux_gas_to_sphere
+    {
+        type            wallHeatFlux;
+        libs            (fieldFunctionObjects);
+        patches         (gas_to_sphere);
+        region          gas;
+        executeControl  writeTime;
+        writeControl    writeTime;
+    }
     
-    #includeFunc  T_Average_inlet
-    #includeFunc  T_Average_outlet
+    // ============================================================
+    // RESIDUS MULTI-REGIONS
+    // ============================================================
     
-
-
-	water_residuals
-	{
+    gas_residuals
+    {
         type            solverInfo;
         libs            (utilityFunctionObjects);
         fields          (".*");
-		region	        water;
-	}
+        region          gas;
+    }
 
-	solid_residuals
-	{
+    sphere_residuals
+    {
         type            solverInfo;
         libs            (utilityFunctionObjects);
         fields          (".*");
-		region	        solid;
-	}
+        region          sphere;
+    }
+
+    box_xmin_residuals
+    {
+        type            solverInfo;
+        libs            (utilityFunctionObjects);
+        fields          (".*");
+        region          box_xmin;
+    }
+
+    box_xmax_residuals
+    {
+        type            solverInfo;
+        libs            (utilityFunctionObjects);
+        fields          (".*");
+        region          box_xmax;
+    }
 }
 
 

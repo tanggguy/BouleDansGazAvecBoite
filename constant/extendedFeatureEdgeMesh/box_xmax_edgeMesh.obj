@@ -1,4 +1,4 @@
-# Wavefront OBJ file written 2026-01-17T13:23:05
+# Wavefront OBJ file written 2026-01-17T16:16:24
 o box_xmax_edgeMesh
 
 # points : 8
@@ -6,26 +6,26 @@ o box_xmax_edgeMesh
 
 # <points count="8">
 v 0.1 0 0.1
-v 0.1 0.1 0
 v 0.1 0 0
+v 0.1 0.1 0
 v 0.1 0.1 0.1
 v 0.11 0 0.1
 v 0.11 0 0
-v 0.11 0.1 0
 v 0.11 0.1 0.1
+v 0.11 0.1 0
 # </points>
 
 # <edges count="12">
-l 3 1
-l 2 3
-l 4 2
-l 1 4
-l 5 6
-l 6 7
-l 7 8
-l 8 5
-l 3 6
+l 2 6
 l 5 1
-l 7 2
-l 4 8
+l 8 3
+l 4 7
+l 1 2
+l 2 3
+l 3 4
+l 4 1
+l 6 5
+l 7 8
+l 8 6
+l 5 7
 # </edges>

@@ -42,12 +42,12 @@ castellatedMeshControls
 
     features
     (
-        { file "gas.eMesh"; level 1; }
-        { file "sphere.eMesh"; level 1; }
-        { file "box_xmax.eMesh" ; level 1 ; }     // <--- AJOUTER CECI
-        { file "box_xmin.eMesh" ; level 1 ; }     // <--- AJOUTER CECI
-        { file "external_box_xmax.eMesh" ; level 1 ; } // Optionnel si vous voulez l'extérieur net
-        { file "external_box_xmin.eMesh" ; level 1 ; }
+        { file "gas.eMesh"; level 0; }
+        { file "sphere.eMesh"; level 0; }
+        { file "box_xmax.eMesh" ; level 0 ; }     // <--- AJOUTER CECI
+        { file "box_xmin.eMesh" ; level 0 ; }     // <--- AJOUTER CECI
+        { file "external_box_xmax.eMesh" ; level 0 ; } // Optionnel si vous voulez l'extérieur net
+        { file "external_box_xmin.eMesh" ; level 0 ; }
     );
 
     refinementSurfaces

@@ -1,0 +1,44 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2506                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      sample;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Coupe 2D dans le plan Z = Center (vue de dessus XY)
+// Pour visualisation du champ de température
+
+type            surfaces;
+libs            (sampling);
+
+region          gas;
+
+writeControl    writeTime;
+
+interpolationScheme cellPoint;
+
+surfaceFormat   vtk;
+
+surfaces
+(
+    slice_Z_center
+    {
+        type            plane;
+        point           (0 0 0.05000);
+        normal          (0 0 1);
+        interpolate     true;
+    }
+);
+
+fields          (T);
+
+// ************************************************************************* //

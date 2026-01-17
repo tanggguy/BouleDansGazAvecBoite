@@ -9,9 +9,9 @@ Build  : _615aae61-20250627 OPENFOAM=2506 version=2506
 Arch   : "LSB;label=32;scalar=64"
 Exec   : surfaceFeatureExtract
 Date   : Jan 17 2026
-Time   : 13:23:05
+Time   : 16:16:24
 Host   : tanguy-VMware-Virtual-Platform
-PID    : 10551
+PID    : 20157
 I/O    : uncollated
 Case   : /home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite
 nProcs : 1
@@ -137,7 +137,7 @@ Load options : offset
 Write options: writeObj=yes writeVTK=off
 
 Statistics:
-Triangles    : 12 in 1 region(s)
+Triangles    : 10 in 1 region(s)
 Vertices     : 8
 Bounding Box : (-0.01 0 0) (0 0.1 0.1)
 
@@ -148,38 +148,38 @@ Initial Feature set:
     points : 8
     edges  : 12
     of which
-        region edges   : 0
-        external edges : 12
-        internal edges : 0
+        region edges   : 4
+        external edges : 4
+        internal edges : 4
 
 Final Feature set:
     points : 8
     of which
-        convex             : 8
+        convex             : 0
         concave            : 0
-        mixed              : 0
+        mixed              : 8
         non-feature        : 0
     edges  : 12
     of which
-        external edges     : 12
-        internal edges     : 0
+        external edges     : 4
+        internal edges     : 4
         flat edges         : 0
-        open edges         : 0
+        open edges         : 4
         multiply connected : 0
 
 Writing extendedFeatureEdgeMesh to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin.extendedFeatureEdgeMesh"
 
 Writing extendedEdgeMesh components to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin"
-Writing 8 convex feature points to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_convexFeaturePts.obj"
+Writing 0 convex feature points to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_convexFeaturePts.obj"
 Writing 0 concave feature points to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_concaveFeaturePts.obj"
-Writing 0 mixed feature points to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_mixedFeaturePts.obj"
-Writing 0 mixed feature point structure to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_mixedFeaturePtsStructure.obj"
-Writing 12 external edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_externalEdges.obj"
-Writing 0 internal edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_internalEdges.obj"
+Writing 8 mixed feature points to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_mixedFeaturePts.obj"
+Writing 8 mixed feature point structure to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_mixedFeaturePtsStructure.obj"
+Writing 4 external edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_externalEdges.obj"
+Writing 4 internal edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_internalEdges.obj"
 Writing 0 flat edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_flatEdges.obj"
-Writing 0 open edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_openEdges.obj"
+Writing 4 open edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_openEdges.obj"
 Writing 0 multiple edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_multipleEdges.obj"
-Writing 0 region edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_regionEdges.obj"
+Writing 4 region edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_regionEdges.obj"
 Writing 12 edge directions to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmin_edgeDirections.obj"
 
 Writing featureEdgeMesh to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/triSurface/box_xmin.eMesh"
@@ -189,7 +189,7 @@ Load options : offset
 Write options: writeObj=yes writeVTK=off
 
 Statistics:
-Triangles    : 12 in 1 region(s)
+Triangles    : 10 in 1 region(s)
 Vertices     : 8
 Bounding Box : (0.1 0 0) (0.11 0.1 0.1)
 
@@ -200,38 +200,38 @@ Initial Feature set:
     points : 8
     edges  : 12
     of which
-        region edges   : 0
-        external edges : 12
-        internal edges : 0
+        region edges   : 4
+        external edges : 4
+        internal edges : 4
 
 Final Feature set:
     points : 8
     of which
-        convex             : 8
+        convex             : 0
         concave            : 0
-        mixed              : 0
+        mixed              : 8
         non-feature        : 0
     edges  : 12
     of which
-        external edges     : 12
-        internal edges     : 0
+        external edges     : 4
+        internal edges     : 4
         flat edges         : 0
-        open edges         : 0
+        open edges         : 4
         multiply connected : 0
 
 Writing extendedFeatureEdgeMesh to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax.extendedFeatureEdgeMesh"
 
 Writing extendedEdgeMesh components to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax"
-Writing 8 convex feature points to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_convexFeaturePts.obj"
+Writing 0 convex feature points to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_convexFeaturePts.obj"
 Writing 0 concave feature points to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_concaveFeaturePts.obj"
-Writing 0 mixed feature points to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_mixedFeaturePts.obj"
-Writing 0 mixed feature point structure to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_mixedFeaturePtsStructure.obj"
-Writing 12 external edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_externalEdges.obj"
-Writing 0 internal edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_internalEdges.obj"
+Writing 8 mixed feature points to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_mixedFeaturePts.obj"
+Writing 8 mixed feature point structure to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_mixedFeaturePtsStructure.obj"
+Writing 4 external edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_externalEdges.obj"
+Writing 4 internal edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_internalEdges.obj"
 Writing 0 flat edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_flatEdges.obj"
-Writing 0 open edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_openEdges.obj"
+Writing 4 open edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_openEdges.obj"
 Writing 0 multiple edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_multipleEdges.obj"
-Writing 0 region edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_regionEdges.obj"
+Writing 4 region edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_regionEdges.obj"
 Writing 12 edge directions to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/box_xmax_edgeDirections.obj"
 
 Writing featureEdgeMesh to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/triSurface/box_xmax.eMesh"
@@ -339,7 +339,7 @@ Writing 4 region edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAv
 Writing 4 edge directions to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/external_box_xmax_edgeDirections.obj"
 
 Writing featureEdgeMesh to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/triSurface/external_box_xmax.eMesh"
-ExecutionTime = 0.1 s  ClockTime = 0 s
+ExecutionTime = 0.13 s  ClockTime = 0 s
 
 End
 

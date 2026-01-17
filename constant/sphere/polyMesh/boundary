@@ -22,8 +22,8 @@ FoamFile
     {
         type            mappedWall;
         inGroups        2(wall mappedPatch);
-        nFaces          2688;
-        startFace       30471;
+        nFaces          672;
+        startFace       6432;
         sampleMode      nearestPatchFace;
         sampleRegion    gas;
         samplePatch     gas_to_sphere;

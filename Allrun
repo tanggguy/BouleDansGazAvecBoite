@@ -16,12 +16,8 @@ cp -r Geom_Salome_STLFiles/Files_INI/controlDict_INI system/controlDict
 cp -r Geom_Salome_STLFiles/Files_INI/blockMeshDict_INI system/blockMeshDict
 cp -r Geom_Salome_STLFiles/Files_INI/snappyHexMeshDict_INI system/snappyHexMeshDict
 
-cp -r Geom_Salome_STLFiles/Files_INI/T_Average_inlet system/T_Average_inlet
-cp -r Geom_Salome_STLFiles/Files_INI/T_Average_outlet system/T_Average_outlet
-
-cp Geom_Salome_STLFiles/Graph_et_Probes_INI/* system/
-
-cp Geom_Salome_STLFiles/Scripts_Plots_INI/* case_treatment/
+# Note: Les fichiers de post-traitement (Probes, Graphs, Scripts) sont déjà
+# copiés et configurés par __MAIN__Geom_salome.py dans system/ et case_treatment/
 
 #./Allmesh.Nolayers  #
 ./Allmesh.layers      
@@ -33,31 +29,30 @@ runParallel $(getApplication)
 runApplication reconstructParMesh -allRegions -constant
 runApplication reconstructPar -allRegions
 
-chtMultiRegionFoam -postProcess -func ZGraph_Centre_Water >log.ZGraph_Centre_Water
-chtMultiRegionFoam -postProcess -func ZGraph_Centre_Solid >log.ZGraph_Centre_Solid
-
-chtMultiRegionFoam -postProcess -func ZGraph_CentreTubeSortie_Water >log.ZGraph_CentreTubeSortie_Water
-chtMultiRegionFoam -postProcess -func ZGraph_CentreTubeSortie_Solid >log.ZGraph_CentreTubeSortie_Solid
-
-chtMultiRegionFoam -postProcess -func ZGraph_CoteSortie_Solid >log.ZGraph_CoteSortie_Solid
-chtMultiRegionFoam -postProcess -func ZGraph_CoteEntree_Solid >log.ZGraph_CoteEntree_Solid
-
-chtMultiRegionFoam -postProcess -func Surface_outlet_VTK >log.Surface_outlet_VTK
-
+# Nettoyage des processeurs
 rm -r processor*
 
-echo "Plot_Residus.py...."
+echo "----------------------------------------------------------------"
+echo "Running Post-Processing Scripts..."
+echo "----------------------------------------------------------------"
+
+echo "1. Plot_Residus.py (Residuals)"
 python3 case_treatment/Plot_Residus.py
 
-echo "Plot_Graph_CSV.py...."
-python3 case_treatment/Plot_Graph_CSV.py
-
-echo "Plot_Probes.py...."
+echo "2. Plot_Probes.py (Temperature Probes)"
 python3 case_treatment/Plot_Probes.py
 
+echo "3. Plot_XProfile.py (Temperature Profile along X)"
+python3 case_treatment/Plot_XProfile.py
+
+echo "4. Plot_HeatFlux.py (Heat Flux & Energy Balance)"
+python3 case_treatment/Plot_HeatFlux.py
+
 echo
-echo "creating files for paraview post-processing"
+echo "Creating files for ParaView..."
 echo
 paraFoam -touchAll
-#paraview
-#------------------------------------------------------------------------------
+
+echo "----------------------------------------------------------------"
+echo "Done."
+echo "----------------------------------------------------------------"
