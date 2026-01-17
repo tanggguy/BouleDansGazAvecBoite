@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Version:  7
+    \\  /    A nd           | Version:  v2506
      \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
@@ -10,7 +10,7 @@ FoamFile
     version     2.0;
     format      ascii;
     class       dictionary;
-    location    "constant/solid";
+    location    "constant/sphere";
     object      thermophysicalProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -28,24 +28,24 @@ thermoType
 
 mixture
 {
-    // Iron
+    // Mousse de polyuréthane (PU) - Valeurs typiques
 
     specie
     {
-        molWeight       50;
+        molWeight       100;    // [g/mol] Valeur approximative (peu d'impact pour solides)
     }
     equationOfState
     {
-        rho             7870;  // [kg/m^3] [1 -3 0 0 0 0 0] source COMSOL (ini 8000)
+        rho             35;     // [kg/m^3] Densité mousse PU rigide (30-50 kg/m³ typique)
     }
     transport
     {
-        kappa           76.2;  // [W/(m*K)] Conductivité thermqiue. source COMSOL 
+        kappa           0.025;  // [W/(m*K)] Conductivité thermique (très isolant)
     }
     thermodynamics
     {
         Hf              0;
-        Cp              440;  // [J/(kg*K)] Capacité thermqiue à volume consant/ source COMSOL. Pour solides Cv env. = à Cp
+        Cp              1500;   // [J/(kg*K)] Capacité thermique
     }
 }
 

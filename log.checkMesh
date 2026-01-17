@@ -9,9 +9,9 @@ Build  : _615aae61-20250627 OPENFOAM=2506 version=2506
 Arch   : "LSB;label=32;scalar=64"
 Exec   : checkMesh -allRegions
 Date   : Jan 17 2026
-Time   : 01:13:37
+Time   : 13:23:16
 Host   : tanguy-VMware-Virtual-Platform
-PID    : 17378
+PID    : 10634
 I/O    : uncollated
 Case   : /home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite
 nProcs : 1
@@ -33,31 +33,31 @@ Check mesh...
 Time = 0
 
 Mesh stats gas
-    points:           24342
-    faces:            60368
-    internal faces:   53421
-    cells:            18117
-    faces per cell:   6.28079
+    points:           24016
+    faces:            59436
+    internal faces:   52530
+    cells:            17816
+    faces per cell:   6.28458
     boundary patches: 4
     point zones:      1
     face zones:       3
     cell zones:       4
 
 Overall number of cells of each type:
-    hexahedra:     16272
+    hexahedra:     15979
     prisms:        0
     wedges:        0
     pyramids:      0
     tet wedges:    0
     tetrahedra:    0
-    polyhedra:     1845
+    polyhedra:     1837
     Breakdown of polyhedra by number of faces:
         faces   number of cells
-            5   10
-            6   659
-            9   745
-           12   339
-           15   92
+            5   9
+            6   669
+            9   721
+           12   342
+           15   96
 
 Checking topology...
     Boundary definition OK.
@@ -69,11 +69,11 @@ Checking topology...
 
 Checking patch topology for multiply connected surfaces...
                    Patch    Faces   Points  Surface topology
-                     gas     2595     2861  ok (non-closed singly connected)
+                     gas     2554     2824  ok (non-closed singly connected)
          gas_to_box_xmin      832      945  ok (non-closed singly connected)
            gas_to_sphere     2688     2690      ok (closed singly connected)
          gas_to_box_xmax      832      945  ok (non-closed singly connected)
-                    ".*"     6947     7121      ok (closed singly connected)
+                    ".*"     6906     7084      ok (closed singly connected)
 
 
 Checking faceZone topology for multiply connected surfaces...
@@ -84,7 +84,7 @@ Checking faceZone topology for multiply connected surfaces...
 
 Checking basic cellZone addressing...
                 CellZone        Cells       Points       VolumeBoundingBox
-                    gas        18117        24342  0.000887474 (0 -1.69407e-21 -3.38813e-21) (0.1 0.1 0.1)
+                    gas        17816        24016  0.000887479 (-1.05879e-22 -3.38813e-21 -3.38813e-21) (0.1 0.1 0.1)
                  sphere            0            0            0 (1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
                box_xmin            0            0            0 (1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
                box_xmax            0            0            0 (1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
@@ -94,18 +94,18 @@ Checking basic pointZone addressing...
             frozenPoints       0(1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
 
 Checking geometry...
-    Overall domain bounding box (0 -1.69407e-21 -3.38813e-21) (0.1 0.1 0.1)
+    Overall domain bounding box (-1.05879e-22 -3.38813e-21 -3.38813e-21) (0.1 0.1 0.1)
     Mesh has 3 geometric (non-empty/wedge) directions (1 1 1)
     Mesh has 3 solution (non-empty) directions (1 1 1)
-    Boundary openness (-1.79385e-16 -1.34453e-17 9.00969e-17) OK.
-    Max cell openness = 2.60984e-16 OK.
-    Max aspect ratio = 2.8833 OK.
-    Minimum face area = 1.00127e-06. Maximum face area = 3.28824e-05.  Face area magnitudes OK.
-    Min volume = 4.25372e-09. Max volume = 1.38845e-07.  Total volume = 0.000887474.  Cell volumes OK.
-    Mesh non-orthogonality Max: 33.1764 average: 9.33401
+    Boundary openness (-1.64741e-16 -4.29032e-18 8.05992e-17) OK.
+    Max cell openness = 2.34055e-16 OK.
+    Max aspect ratio = 2.69178 OK.
+    Minimum face area = 9.93676e-07. Maximum face area = 3.28041e-05.  Face area magnitudes OK.
+    Min volume = 4.37345e-09. Max volume = 1.38845e-07.  Total volume = 0.000887479.  Cell volumes OK.
+    Mesh non-orthogonality Max: 35.7931 average: 9.38626
     Non-orthogonality check OK.
     Face pyramids OK.
-    Max skewness = 3.55202 OK.
+    Max skewness = 3.3025 OK.
     Coupled point location match (average 0) OK.
 
 Mesh OK.
@@ -159,7 +159,7 @@ Checking faceZone topology for multiply connected surfaces...
 Checking basic cellZone addressing...
                 CellZone        Cells       Points       VolumeBoundingBox
                     gas            0            0            0 (1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
-                 sphere        10449        12314  0.000112409 (0.0200584 0.020042 0.0200098) (0.0802346 0.079954 0.0799937)
+                 sphere        10449        12314   0.00011245 (0.0200601 0.0200552 0.0200138) (0.0799975 0.0799626 0.0799985)
                box_xmin            0            0            0 (1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
                box_xmax            0            0            0 (1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
 
@@ -168,49 +168,47 @@ Checking basic pointZone addressing...
             frozenPoints       0(1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
 
 Checking geometry...
-    Overall domain bounding box (0.0200584 0.020042 0.0200098) (0.0802346 0.079954 0.0799937)
+    Overall domain bounding box (0.0200601 0.0200552 0.0200138) (0.0799975 0.0799626 0.0799985)
     Mesh has 3 geometric (non-empty/wedge) directions (1 1 1)
     Mesh has 3 solution (non-empty) directions (1 1 1)
-    Boundary openness (1.83252e-16 -2.321e-17 -2.04841e-16) OK.
-    Max cell openness = 2.98552e-16 OK.
-    Max aspect ratio = 4.18618 OK.
-    Minimum face area = 1.7288e-07. Maximum face area = 2.4567e-05.  Face area magnitudes OK.
-    Min volume = 6.56278e-10. Max volume = 1.19266e-07.  Total volume = 0.000112409.  Cell volumes OK.
-    Mesh non-orthogonality Max: 56.8578 average: 13.7617
+    Boundary openness (-5.33262e-16 8.53816e-17 -4.39559e-17) OK.
+    Max cell openness = 2.36327e-16 OK.
+    Max aspect ratio = 3.94611 OK.
+    Minimum face area = 2.36509e-07. Maximum face area = 2.45504e-05.  Face area magnitudes OK.
+    Min volume = 6.46966e-10. Max volume = 1.19438e-07.  Total volume = 0.00011245.  Cell volumes OK.
+    Mesh non-orthogonality Max: 55.6022 average: 13.6793
     Non-orthogonality check OK.
     Face pyramids OK.
-    Max skewness = 1.39759 OK.
+    Max skewness = 1.51995 OK.
     Coupled point location match (average 0) OK.
 
 Mesh OK.
 
 Mesh stats box_xmin
-    points:           4260
-    faces:            9741
-    internal faces:   7455
-    cells:            2802
-    faces per cell:   6.13704
+    points:           4271
+    faces:            9782
+    internal faces:   7488
+    cells:            2816
+    faces per cell:   6.13281
     boundary patches: 3
     point zones:      1
     face zones:       3
     cell zones:       4
 
 Overall number of cells of each type:
-    hexahedra:     2672
+    hexahedra:     2690
     prisms:        0
     wedges:        0
     pyramids:      0
     tet wedges:    0
     tetrahedra:    0
-    polyhedra:     130
+    polyhedra:     126
     Breakdown of polyhedra by number of faces:
         faces   number of cells
             4   4
-            5   4
-            6   2
-            9   110
+            5   2
+            9   112
            12   8
-           15   2
 
 Checking topology...
     Boundary definition OK.
@@ -222,10 +220,10 @@ Checking topology...
 
 Checking patch topology for multiply connected surfaces...
                    Patch    Faces   Points  Surface topology
-                box_xmin     1346     1574  ok (non-closed singly connected)
-       external_box_xmin      108      344  ok (non-closed singly connected)
+                box_xmin     1352     1580  ok (non-closed singly connected)
+       external_box_xmin      110      357  ok (non-closed singly connected)
          box_xmin_to_gas      832      945  ok (non-closed singly connected)
-                    ".*"     2286     2361      ok (closed singly connected)
+                    ".*"     2294     2366      ok (closed singly connected)
 
 
 Checking faceZone topology for multiply connected surfaces...
@@ -238,7 +236,7 @@ Checking basic cellZone addressing...
                 CellZone        Cells       Points       VolumeBoundingBox
                     gas            0            0            0 (1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
                  sphere            0            0            0 (1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
-               box_xmin         2802         4260  9.99508e-05 (-0.01 -1.69407e-21 -3.38813e-21) (0 0.1 0.1)
+               box_xmin         2816         4271   9.9957e-05 (-0.01 -1.69407e-21 -1.69407e-21) (2.64698e-23 0.1 0.1)
                box_xmax            0            0            0 (1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
 
 Checking basic pointZone addressing...
@@ -246,49 +244,47 @@ Checking basic pointZone addressing...
             frozenPoints       0(1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
 
 Checking geometry...
-    Overall domain bounding box (-0.01 -1.69407e-21 -3.38813e-21) (0 0.1 0.1)
+    Overall domain bounding box (-0.01 -1.69407e-21 -1.69407e-21) (2.64698e-23 0.1 0.1)
     Mesh has 3 geometric (non-empty/wedge) directions (1 1 1)
     Mesh has 3 solution (non-empty) directions (1 1 1)
-    Boundary openness (7.19308e-16 -1.16706e-17 2.66306e-17) OK.
-    Max cell openness = 2.19531e-16 OK.
-    Max aspect ratio = 2.15666 OK.
-    Minimum face area = 4.80913e-06. Maximum face area = 2.67302e-05.  Face area magnitudes OK.
-    Min volume = 5.93111e-09. Max volume = 1.33649e-07.  Total volume = 9.99508e-05.  Cell volumes OK.
-    Mesh non-orthogonality Max: 27.7287 average: 5.77573
+    Boundary openness (1.63592e-16 2.20267e-17 1.44958e-18) OK.
+    Max cell openness = 2.11261e-16 OK.
+    Max aspect ratio = 2.15652 OK.
+    Minimum face area = 4.80912e-06. Maximum face area = 2.67269e-05.  Face area magnitudes OK.
+    Min volume = 5.93217e-09. Max volume = 1.33649e-07.  Total volume = 9.9957e-05.  Cell volumes OK.
+    Mesh non-orthogonality Max: 27.7277 average: 5.6493
     Non-orthogonality check OK.
     Face pyramids OK.
-    Max skewness = 0.370059 OK.
+    Max skewness = 0.358176 OK.
     Coupled point location match (average 0) OK.
 
 Mesh OK.
 
 Mesh stats box_xmax
-    points:           4145
-    faces:            9389
-    internal faces:   7152
-    cells:            2683
-    faces per cell:   6.16511
+    points:           4271
+    faces:            9781
+    internal faces:   7488
+    cells:            2816
+    faces per cell:   6.13246
     boundary patches: 3
     point zones:      1
     face zones:       3
     cell zones:       4
 
 Overall number of cells of each type:
-    hexahedra:     2537
+    hexahedra:     2689
     prisms:        0
     wedges:        0
     pyramids:      0
     tet wedges:    0
     tetrahedra:    0
-    polyhedra:     146
+    polyhedra:     127
     Breakdown of polyhedra by number of faces:
         faces   number of cells
-            4   3
-            5   4
-            6   16
-            9   99
-           12   20
-           15   4
+            4   4
+            5   3
+            9   112
+           12   8
 
 Checking topology...
     Boundary definition OK.
@@ -300,10 +296,10 @@ Checking topology...
 
 Checking patch topology for multiply connected surfaces...
                    Patch    Faces   Points  Surface topology
-                box_xmax     1311     1526  ok (non-closed singly connected)
-       external_box_xmax       94      298  ok (non-closed singly connected)
+                box_xmax     1351     1579  ok (non-closed singly connected)
+       external_box_xmax      110      342  ok (non-closed singly connected)
          box_xmax_to_gas      832      945  ok (non-closed singly connected)
-                    ".*"     2237     2312      ok (closed singly connected)
+                    ".*"     2293     2366      ok (closed singly connected)
 
 
 Checking faceZone topology for multiply connected surfaces...
@@ -317,7 +313,7 @@ Checking basic cellZone addressing...
                     gas            0            0            0 (1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
                  sphere            0            0            0 (1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
                box_xmin            0            0            0 (1e+150 1e+150 1e+150) (-1e+150 -1e+150 -1e+150)
-               box_xmax         2683         4145  9.99599e-05 (0.1 -1.69407e-21 -1.69407e-21) (0.11 0.1 0.1)
+               box_xmax         2816         4271  9.99539e-05 (0.1 -1.69407e-21 -1.69407e-21) (0.11 0.1 0.1)
 
 Checking basic pointZone addressing...
                PointZone  PointsBoundingBox
@@ -327,15 +323,15 @@ Checking geometry...
     Overall domain bounding box (0.1 -1.69407e-21 -1.69407e-21) (0.11 0.1 0.1)
     Mesh has 3 geometric (non-empty/wedge) directions (1 1 1)
     Mesh has 3 solution (non-empty) directions (1 1 1)
-    Boundary openness (2.43086e-16 -4.03022e-18 1.78884e-17) OK.
-    Max cell openness = 2.22916e-16 OK.
-    Max aspect ratio = 2.15667 OK.
-    Minimum face area = 4.80912e-06. Maximum face area = 2.67363e-05.  Face area magnitudes OK.
-    Min volume = 5.9311e-09. Max volume = 1.33695e-07.  Total volume = 9.99599e-05.  Cell volumes OK.
-    Mesh non-orthogonality Max: 27.7295 average: 6.34432
+    Boundary openness (-5.76736e-17 -5.65774e-19 -1.98374e-17) OK.
+    Max cell openness = 2.26232e-16 OK.
+    Max aspect ratio = 2.15666 OK.
+    Minimum face area = 4.80912e-06. Maximum face area = 2.67269e-05.  Face area magnitudes OK.
+    Min volume = 5.93111e-09. Max volume = 1.33649e-07.  Total volume = 9.99539e-05.  Cell volumes OK.
+    Mesh non-orthogonality Max: 27.7271 average: 5.65215
     Non-orthogonality check OK.
     Face pyramids OK.
-    Max skewness = 0.369496 OK.
+    Max skewness = 0.358174 OK.
     Coupled point location match (average 0) OK.
 
 Mesh OK.

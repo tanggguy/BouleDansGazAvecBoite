@@ -22,22 +22,22 @@ FoamFile
     {
         type            wall;
         inGroups        1(wall);
-        nFaces          1346;
-        startFace       7455;
+        nFaces          1352;
+        startFace       7488;
     }
     external_box_xmin
     {
         type            wall;
         inGroups        1(wall);
-        nFaces          108;
-        startFace       8801;
+        nFaces          110;
+        startFace       8840;
     }
     box_xmin_to_gas
     {
         type            mappedWall;
         inGroups        2(wall mappedPatch);
         nFaces          832;
-        startFace       8909;
+        startFace       8950;
         sampleMode      nearestPatchFace;
         sampleRegion    gas;
         samplePatch     gas_to_box_xmin;

@@ -9,9 +9,9 @@ Build  : _615aae61-20250627 OPENFOAM=2506 version=2506
 Arch   : "LSB;label=32;scalar=64"
 Exec   : reconstructParMesh -allRegions -constant
 Date   : Jan 17 2026
-Time   : 01:13:36
+Time   : 13:23:16
 Host   : tanguy-VMware-Virtual-Platform
-PID    : 17360
+PID    : 10629
 I/O    : uncollated
 Case   : /home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite
 nProcs : 1
@@ -34,9 +34,11 @@ Not well tested & use at your own risk!
 Merge assuming correct, fully matched procBoundaries.
 
 Using all regions: (gas sphere box_xmin box_xmax)
-Found 2 processor directories
+Found 4 processor directories
     Reading database "BouleDansGazAvecBoite/processor0"
     Reading database "BouleDansGazAvecBoite/processor1"
+    Reading database "BouleDansGazAvecBoite/processor2"
+    Reading database "BouleDansGazAvecBoite/processor3"
 
 Time = constant
 
@@ -57,6 +59,22 @@ Writing addressing : "BouleDansGazAvecBoite/processor0/constant/gas/polyMesh"
 Processor 1
 Read processor mesh: "BouleDansGazAvecBoite/processor1/gas"
 Writing addressing : "BouleDansGazAvecBoite/processor1/constant/gas/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
+Processor 2
+Read processor mesh: "BouleDansGazAvecBoite/processor2/gas"
+Writing addressing : "BouleDansGazAvecBoite/processor2/constant/gas/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
+Processor 3
+Read processor mesh: "BouleDansGazAvecBoite/processor3/gas"
+Writing addressing : "BouleDansGazAvecBoite/processor3/constant/gas/polyMesh"
     pointProcAddressing
     faceProcAddressing
     cellProcAddressing
@@ -84,6 +102,22 @@ Writing addressing : "BouleDansGazAvecBoite/processor1/constant/sphere/polyMesh"
     cellProcAddressing
     boundaryProcAddressing
 
+Processor 2
+Read processor mesh: "BouleDansGazAvecBoite/processor2/sphere"
+Writing addressing : "BouleDansGazAvecBoite/processor2/constant/sphere/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
+Processor 3
+Read processor mesh: "BouleDansGazAvecBoite/processor3/sphere"
+Writing addressing : "BouleDansGazAvecBoite/processor3/constant/sphere/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
 region=box_xmin
 
 Writing merged mesh to "constant/box_xmin/polyMesh"
@@ -106,6 +140,22 @@ Writing addressing : "BouleDansGazAvecBoite/processor1/constant/box_xmin/polyMes
     cellProcAddressing
     boundaryProcAddressing
 
+Processor 2
+Read processor mesh: "BouleDansGazAvecBoite/processor2/box_xmin"
+Writing addressing : "BouleDansGazAvecBoite/processor2/constant/box_xmin/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
+Processor 3
+Read processor mesh: "BouleDansGazAvecBoite/processor3/box_xmin"
+Writing addressing : "BouleDansGazAvecBoite/processor3/constant/box_xmin/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
 region=box_xmax
 
 Writing merged mesh to "constant/box_xmax/polyMesh"
@@ -123,6 +173,22 @@ Writing addressing : "BouleDansGazAvecBoite/processor0/constant/box_xmax/polyMes
 Processor 1
 Read processor mesh: "BouleDansGazAvecBoite/processor1/box_xmax"
 Writing addressing : "BouleDansGazAvecBoite/processor1/constant/box_xmax/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
+Processor 2
+Read processor mesh: "BouleDansGazAvecBoite/processor2/box_xmax"
+Writing addressing : "BouleDansGazAvecBoite/processor2/constant/box_xmax/polyMesh"
+    pointProcAddressing
+    faceProcAddressing
+    cellProcAddressing
+    boundaryProcAddressing
+
+Processor 3
+Read processor mesh: "BouleDansGazAvecBoite/processor3/box_xmax"
+Writing addressing : "BouleDansGazAvecBoite/processor3/constant/box_xmax/polyMesh"
     pointProcAddressing
     faceProcAddressing
     cellProcAddressing

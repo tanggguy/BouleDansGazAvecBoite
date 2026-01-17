@@ -1,40 +1,47 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  2412                                  |
+|  \\    /   O peration     | Version:  2506                                  |
 |   \\  /    A nd           | Website:  www.openfoam.com                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
-    format      binary;
+    format      ascii;
     class       volScalarField;
-    location    "0/water";
+    location    "0/gas";
     object      T;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 dimensions      [0 0 0 1 0 0 0];
 
-internalField   uniform 293.15;
+internalField   uniform 285.65;
 
 boundaryField
 {
     #includeEtc "caseDicts/setConstraintTypes"
 
-    inlet
+    gas
     {
-        type            fixedValue;
-        value           uniform 293.15;
+        type            zeroGradient;  // Parois adiabatiques
     }
-    outlet
+    gas_to_box_xmin
     {
-        type            inletOutlet;
+        type            compressible::turbulentTemperatureCoupledBaffleMixed;
         value           $internalField;
-        inletValue      $internalField;
+        kappaMethod     fluidThermo;
+        Tnbr            T;
     }
-    water_to_solid
+    gas_to_sphere
+    {
+        type            compressible::turbulentTemperatureCoupledBaffleMixed;
+        value           $internalField;
+        kappaMethod     fluidThermo;
+        Tnbr            T;
+    }
+    gas_to_box_xmax
     {
         type            compressible::turbulentTemperatureCoupledBaffleMixed;
         value           $internalField;
@@ -42,6 +49,5 @@ boundaryField
         Tnbr            T;
     }
 }
-
 
 // ************************************************************************* //

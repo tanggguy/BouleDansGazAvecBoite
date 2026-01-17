@@ -1,16 +1,16 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  2412                                  |
+|  \\    /   O peration     | Version:  2506                                  |
 |   \\  /    A nd           | Website:  www.openfoam.com                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
     version     2.0;
-    format      binary;
+    format      ascii;
     class       volVectorField;
-    location    "0/water";
+    location    "0/gas";
     object      U;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -23,22 +23,22 @@ boundaryField
 {
     #includeEtc "caseDicts/setConstraintTypes"
 
-    ".*"
+    gas
+    {
+        type            noSlip;  // Parois - vitesse nulle
+    }
+    gas_to_box_xmin
     {
         type            noSlip;
     }
-
-    inlet
+    gas_to_sphere
     {
-        type            fixedValue;
-        value           uniform (0 0 0.01);
+        type            noSlip;
     }
-    outlet
+    gas_to_box_xmax
     {
-        type            pressureInletOutletVelocity;
-        value           $internalField;
+        type            noSlip;
     }
 }
-
 
 // ************************************************************************* //
