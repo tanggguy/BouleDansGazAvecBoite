@@ -1,0 +1,256 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2506                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    arch        "LSB;label=32;scalar=64";
+    class       dictionary;
+    location    "250/uniform/functionObjects";
+    object      functionObjectProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+cdf7e925f5746741c316f5fbcf39ad0dfca90775
+{
+    gas_residuals
+    {
+        scalar
+        {
+            Ux_initial      0.609731;
+            Ux_final        0.0359046;
+            Uy_initial      0.713989;
+            Uy_final        0.0397128;
+            Uz_initial      0.727687;
+            Uz_final        0.061267;
+            h_initial       0.008737150000000001;
+            h_final         0.0005371729999999999;
+            p_rgh_initial   0.599445;
+            p_rgh_final     0.0278237;
+            rho_initial     0;
+            rho_final       0;
+        }
+        label
+        {
+            Ux_iters        1;
+            Uy_iters        1;
+            Uz_iters        1;
+            h_iters         1;
+            p_rgh_iters     3;
+            rho_iters       0;
+        }
+    }
+    sphere_residuals
+    {
+        scalar
+        {
+            h_initial       0.000453461;
+            h_final         4.83486e-07;
+        }
+        label
+        {
+            h_iters         1;
+        }
+    }
+    box_xmin_residuals
+    {
+        scalar
+        {
+            h_initial       8.06694e-05;
+            h_final         2.77951e-08;
+        }
+        label
+        {
+            h_iters         1;
+        }
+    }
+    box_xmax_residuals
+    {
+        scalar
+        {
+            h_initial       0.000105829;
+            h_final         5.09964e-08;
+        }
+        label
+        {
+            h_iters         1;
+        }
+    }
+    Probes_Sphere
+    {
+        scalar
+        {
+            average(T)      285.8531343133899;
+            min(T)          285.641499171888;
+            max(T)          285.9674342801258;
+        }
+        label
+        {
+            size(T)         3;
+        }
+    }
+    Probes_Gas
+    {
+        scalar
+        {
+            average(T)      286.3670796017826;
+            min(T)          285.3122766541194;
+            max(T)          287.4218825494459;
+        }
+        label
+        {
+            size(T)         2;
+        }
+    }
+    XGraph_Sphere
+    {
+        scalar
+        {
+            average(line,T) 285.7207740024437;
+            min(line,T)     285.6612964819543;
+            max(line,T)     285.8932717577609;
+            average(T)      285.7207740024437;
+            min(T)          285.6612964819543;
+            max(T)          285.8932717577609;
+        }
+        label
+        {
+            size(line,T)    50;
+            size(T)         50;
+        }
+    }
+    XGraph_Gas
+    {
+        scalar
+        {
+            average(line,T) 285.8899599230529;
+            min(line,T)     284.5590178913175;
+            max(line,T)     289.3372149433271;
+            average(T)      285.8899599230529;
+            min(T)          284.5590178913175;
+            max(T)          289.3372149433271;
+        }
+        label
+        {
+            size(line,T)    35;
+            size(T)         35;
+        }
+    }
+    XGraph_BoxXmin
+    {
+        scalar
+        {
+            average(line,T) 293.7684631135218;
+            min(line,T)     289.5214314535095;
+            max(line,T)     298.0617824599318;
+            average(T)      293.7684631135218;
+            min(T)          289.5214314535095;
+            max(T)          298.0617824599318;
+        }
+        label
+        {
+            size(line,T)    20;
+            size(T)         20;
+        }
+    }
+    XGraph_BoxXmax
+    {
+        scalar
+        {
+            average(line,T) 277.5515658889764;
+            min(line,T)     273.2410506137876;
+            max(line,T)     281.6239519121487;
+            average(T)      277.5515658889764;
+            min(T)          273.2410506137876;
+            max(T)          281.6239519121487;
+        }
+        label
+        {
+            size(line,T)    20;
+            size(T)         20;
+        }
+    }
+    HeatFlux_box_xmin_external
+    {
+        scalar
+        {
+            min(external_box_xmin) 18.4488214308892;
+            max(external_box_xmin) 25.55238848112446;
+            int(external_box_xmin) 0.2201518820971607;
+        }
+    }
+    HeatFlux_box_xmax_external
+    {
+        scalar
+        {
+            min(external_box_xmax) -24.55574513866287;
+            max(external_box_xmax) -17.53121882435622;
+            int(external_box_xmax) -0.2193489100233698;
+        }
+    }
+    HeatFlux_gas_to_sphere
+    {
+        scalar
+        {
+            min(gas_to_sphere) -4.05250894064054;
+            max(gas_to_sphere) 5.959789563346515;
+            int(gas_to_sphere) 0.00569022760973505;
+        }
+    }
+}
+
+XGraph_Sphere
+{
+    T
+    {
+        file            "<case>/postProcessing/XGraph_Sphere/sphere/250/line_T.csv";
+    }
+}
+
+XGraph_Gas
+{
+    T
+    {
+        file            "<case>/postProcessing/XGraph_Gas/gas/250/line_T.csv";
+    }
+}
+
+XGraph_BoxXmin
+{
+    T
+    {
+        file            "<case>/postProcessing/XGraph_BoxXmin/box_xmin/250/line_T.csv";
+    }
+}
+
+XGraph_BoxXmax
+{
+    T
+    {
+        file            "<case>/postProcessing/XGraph_BoxXmax/box_xmax/250/line_T.csv";
+    }
+}
+
+Slice_YCenter_Gas
+{
+    T
+    {
+        file            "<case>/postProcessing/Slice_YCenter_Gas/250/slice_Y_center.vtp";
+    }
+}
+
+Slice_ZCenter_Gas
+{
+    T
+    {
+        file            "<case>/postProcessing/Slice_ZCenter_Gas/250/slice_Z_center.vtp";
+    }
+}
+
+
+// ************************************************************************* //

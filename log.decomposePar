@@ -8,10 +8,10 @@
 Build  : _615aae61-20250627 OPENFOAM=2506 version=2506
 Arch   : "LSB;label=32;scalar=64"
 Exec   : decomposePar -allRegions -copyZero -constant
-Date   : Jan 17 2026
-Time   : 16:16:29
+Date   : Jan 19 2026
+Time   : 15:51:03
 Host   : tanguy-VMware-Virtual-Platform
-PID    : 20239
+PID    : 10721
 I/O    : uncollated
 Case   : /home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite
 nProcs : 1
@@ -32,7 +32,7 @@ Create mesh
 Calculating distribution of cells
 Decomposition method scotch [4] (region gas)
 
-Finished decomposition in 0.07 s
+Finished decomposition in 0.08 s
 
 Calculating original mesh data
 
@@ -47,46 +47,42 @@ Constructing processor meshes
 Processor 0
     Number of cells = 1772
     Number of points = 2346
-    Number of faces shared with processor 1 = 152
-    Number of faces shared with processor 2 = 64
-    Number of faces shared with processor 3 = 80
-    Number of processor patches = 3
+    Number of faces shared with processor 1 = 144
+    Number of faces shared with processor 3 = 152
+    Number of processor patches = 2
     Number of processor faces = 296
     Number of boundary faces = 766
 
 Processor 1
     Number of cells = 1772
     Number of points = 2346
-    Number of faces shared with processor 0 = 152
-    Number of faces shared with processor 2 = 80
-    Number of faces shared with processor 3 = 64
-    Number of processor patches = 3
+    Number of faces shared with processor 0 = 144
+    Number of faces shared with processor 2 = 152
+    Number of processor patches = 2
     Number of processor faces = 296
-    Number of boundary faces = 766
+    Number of boundary faces = 767
 
 Processor 2
     Number of cells = 1772
     Number of points = 2346
-    Number of faces shared with processor 0 = 64
-    Number of faces shared with processor 1 = 80
-    Number of faces shared with processor 3 = 152
-    Number of processor patches = 3
+    Number of faces shared with processor 1 = 152
+    Number of faces shared with processor 3 = 144
+    Number of processor patches = 2
     Number of processor faces = 296
-    Number of boundary faces = 767
+    Number of boundary faces = 765
 
 Processor 3
     Number of cells = 1772
     Number of points = 2346
-    Number of faces shared with processor 0 = 80
-    Number of faces shared with processor 1 = 64
-    Number of faces shared with processor 2 = 152
-    Number of processor patches = 3
+    Number of faces shared with processor 0 = 152
+    Number of faces shared with processor 2 = 144
+    Number of processor patches = 2
     Number of processor faces = 296
-    Number of boundary faces = 765
+    Number of boundary faces = 766
 
 Number of processor faces = 592
 Max number of cells = 1772 (0% above average 1772)
-Max number of processor patches = 3 (0% above average 3)
+Max number of processor patches = 2 (0% above average 2)
 Max number of faces between processors = 296 (0% above average 296)
 
 Processor 0: copying "0/" to "processor0/0"
@@ -102,7 +98,7 @@ Create mesh
 Calculating distribution of cells
 Decomposition method scotch [4] (region sphere)
 
-Finished decomposition in 0.02 s
+Finished decomposition in 0.03 s
 
 Calculating original mesh data
 
@@ -115,49 +111,49 @@ Distributing points to processors
 Constructing processor meshes
 
 Processor 0
-    Number of cells = 564
-    Number of points = 797
-    Number of faces shared with processor 1 = 117
-    Number of faces shared with processor 2 = 33
-    Number of faces shared with processor 3 = 91
+    Number of cells = 567
+    Number of points = 786
+    Number of faces shared with processor 1 = 86
+    Number of faces shared with processor 2 = 34
+    Number of faces shared with processor 3 = 90
     Number of processor patches = 3
-    Number of processor faces = 241
-    Number of boundary faces = 167
+    Number of processor faces = 210
+    Number of boundary faces = 174
 
 Processor 1
-    Number of cells = 564
-    Number of points = 805
-    Number of faces shared with processor 0 = 117
-    Number of faces shared with processor 2 = 88
-    Number of faces shared with processor 3 = 46
+    Number of cells = 563
+    Number of points = 779
+    Number of faces shared with processor 0 = 86
+    Number of faces shared with processor 2 = 78
+    Number of faces shared with processor 3 = 42
     Number of processor patches = 3
-    Number of processor faces = 251
-    Number of boundary faces = 171
+    Number of processor faces = 206
+    Number of boundary faces = 172
 
 Processor 2
-    Number of cells = 564
-    Number of points = 798
-    Number of faces shared with processor 0 = 33
-    Number of faces shared with processor 1 = 88
-    Number of faces shared with processor 3 = 112
+    Number of cells = 563
+    Number of points = 792
+    Number of faces shared with processor 0 = 34
+    Number of faces shared with processor 1 = 78
+    Number of faces shared with processor 3 = 115
     Number of processor patches = 3
-    Number of processor faces = 233
-    Number of boundary faces = 177
+    Number of processor faces = 227
+    Number of boundary faces = 173
 
 Processor 3
-    Number of cells = 564
-    Number of points = 795
-    Number of faces shared with processor 0 = 91
-    Number of faces shared with processor 1 = 46
-    Number of faces shared with processor 2 = 112
+    Number of cells = 563
+    Number of points = 791
+    Number of faces shared with processor 0 = 90
+    Number of faces shared with processor 1 = 42
+    Number of faces shared with processor 2 = 115
     Number of processor patches = 3
-    Number of processor faces = 249
-    Number of boundary faces = 157
+    Number of processor faces = 247
+    Number of boundary faces = 153
 
-Number of processor faces = 487
-Max number of cells = 564 (0% above average 564)
+Number of processor faces = 445
+Max number of cells = 567 (0.531915% above average 564)
 Max number of processor patches = 3 (0% above average 3)
-Max number of faces between processors = 251 (3.08008% above average 243.5)
+Max number of faces between processors = 247 (11.0112% above average 222.5)
 
 Processor 0: copying "0/" to "processor0/0"
 Processor 1: copying "0/" to "processor1/0"
@@ -185,45 +181,47 @@ Distributing points to processors
 Constructing processor meshes
 
 Processor 0
-    Number of cells = 200
-    Number of points = 363
+    Number of cells = 202
+    Number of points = 369
     Number of faces shared with processor 1 = 20
-    Number of faces shared with processor 2 = 20
-    Number of processor patches = 2
-    Number of processor faces = 40
-    Number of boundary faces = 240
+    Number of faces shared with processor 2 = 4
+    Number of faces shared with processor 3 = 20
+    Number of processor patches = 3
+    Number of processor faces = 44
+    Number of boundary faces = 242
 
 Processor 1
-    Number of cells = 200
-    Number of points = 363
+    Number of cells = 198
+    Number of points = 360
     Number of faces shared with processor 0 = 20
-    Number of faces shared with processor 3 = 20
-    Number of processor patches = 2
-    Number of processor faces = 40
-    Number of boundary faces = 240
-
-Processor 2
-    Number of cells = 200
-    Number of points = 363
-    Number of faces shared with processor 0 = 20
-    Number of faces shared with processor 3 = 20
-    Number of processor patches = 2
-    Number of processor faces = 40
-    Number of boundary faces = 240
-
-Processor 3
-    Number of cells = 200
-    Number of points = 363
-    Number of faces shared with processor 1 = 20
     Number of faces shared with processor 2 = 20
     Number of processor patches = 2
     Number of processor faces = 40
-    Number of boundary faces = 240
+    Number of boundary faces = 238
 
-Number of processor faces = 80
-Max number of cells = 200 (0% above average 200)
-Max number of processor patches = 2 (0% above average 2)
-Max number of faces between processors = 40 (0% above average 40)
+Processor 2
+    Number of cells = 202
+    Number of points = 369
+    Number of faces shared with processor 0 = 4
+    Number of faces shared with processor 1 = 20
+    Number of faces shared with processor 3 = 20
+    Number of processor patches = 3
+    Number of processor faces = 44
+    Number of boundary faces = 242
+
+Processor 3
+    Number of cells = 198
+    Number of points = 360
+    Number of faces shared with processor 0 = 20
+    Number of faces shared with processor 2 = 20
+    Number of processor patches = 2
+    Number of processor faces = 40
+    Number of boundary faces = 238
+
+Number of processor faces = 84
+Max number of cells = 202 (1% above average 200)
+Max number of processor patches = 3 (20% above average 2.5)
+Max number of faces between processors = 44 (4.7619% above average 42)
 
 Processor 0: copying "0/" to "processor0/0"
 Processor 1: copying "0/" to "processor1/0"
@@ -238,7 +236,7 @@ Create mesh
 Calculating distribution of cells
 Decomposition method scotch [4] (region box_xmax)
 
-Finished decomposition in 0.01 s
+Finished decomposition in 0.02 s
 
 Calculating original mesh data
 
@@ -251,45 +249,47 @@ Distributing points to processors
 Constructing processor meshes
 
 Processor 0
-    Number of cells = 200
-    Number of points = 363
+    Number of cells = 198
+    Number of points = 360
     Number of faces shared with processor 1 = 20
-    Number of faces shared with processor 2 = 20
+    Number of faces shared with processor 3 = 20
     Number of processor patches = 2
     Number of processor faces = 40
-    Number of boundary faces = 240
+    Number of boundary faces = 238
 
 Processor 1
-    Number of cells = 200
-    Number of points = 363
+    Number of cells = 202
+    Number of points = 369
     Number of faces shared with processor 0 = 20
-    Number of faces shared with processor 3 = 20
-    Number of processor patches = 2
-    Number of processor faces = 40
-    Number of boundary faces = 240
+    Number of faces shared with processor 2 = 20
+    Number of faces shared with processor 3 = 4
+    Number of processor patches = 3
+    Number of processor faces = 44
+    Number of boundary faces = 242
 
 Processor 2
-    Number of cells = 200
-    Number of points = 363
-    Number of faces shared with processor 0 = 20
+    Number of cells = 198
+    Number of points = 360
+    Number of faces shared with processor 1 = 20
     Number of faces shared with processor 3 = 20
     Number of processor patches = 2
     Number of processor faces = 40
-    Number of boundary faces = 240
+    Number of boundary faces = 238
 
 Processor 3
-    Number of cells = 200
-    Number of points = 363
-    Number of faces shared with processor 1 = 20
+    Number of cells = 202
+    Number of points = 369
+    Number of faces shared with processor 0 = 20
+    Number of faces shared with processor 1 = 4
     Number of faces shared with processor 2 = 20
-    Number of processor patches = 2
-    Number of processor faces = 40
-    Number of boundary faces = 240
+    Number of processor patches = 3
+    Number of processor faces = 44
+    Number of boundary faces = 242
 
-Number of processor faces = 80
-Max number of cells = 200 (0% above average 200)
-Max number of processor patches = 2 (0% above average 2)
-Max number of faces between processors = 40 (0% above average 40)
+Number of processor faces = 84
+Max number of cells = 202 (1% above average 200)
+Max number of processor patches = 3 (20% above average 2.5)
+Max number of faces between processors = 44 (4.7619% above average 42)
 
 Processor 0: copying "0/" to "processor0/0"
 Processor 1: copying "0/" to "processor1/0"

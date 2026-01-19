@@ -8,10 +8,10 @@
 Build  : _615aae61-20250627 OPENFOAM=2506 version=2506
 Arch   : "LSB;label=32;scalar=64"
 Exec   : reconstructParMesh -allRegions -constant
-Date   : Jan 17 2026
-Time   : 16:16:31
+Date   : Jan 19 2026
+Time   : 15:56:22
 Host   : tanguy-VMware-Virtual-Platform
-PID    : 20263
+PID    : 10869
 I/O    : uncollated
 Case   : /home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite
 nProcs : 1
@@ -193,6 +193,36 @@ Writing addressing : "BouleDansGazAvecBoite/processor3/constant/box_xmax/polyMes
     faceProcAddressing
     cellProcAddressing
     boundaryProcAddressing
+
+Time = 25
+No meshes
+
+Time = 50
+No meshes
+
+Time = 75
+No meshes
+
+Time = 100
+No meshes
+
+Time = 125
+No meshes
+
+Time = 150
+No meshes
+
+Time = 175
+No meshes
+
+Time = 200
+No meshes
+
+Time = 225
+No meshes
+
+Time = 250
+No meshes
 
 End
 

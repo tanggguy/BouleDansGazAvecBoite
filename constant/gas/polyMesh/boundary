@@ -25,15 +25,15 @@ FoamFile
         nFaces          1592;
         startFace       19728;
     }
-    gas_to_box_xmax
+    gas_to_box_xmin
     {
         type            mappedWall;
         inGroups        2(wall mappedPatch);
         nFaces          400;
         startFace       21320;
         sampleMode      nearestPatchFace;
-        sampleRegion    box_xmax;
-        samplePatch     box_xmax_to_gas;
+        sampleRegion    box_xmin;
+        samplePatch     box_xmin_to_gas;
     }
     gas_to_sphere
     {
@@ -45,15 +45,15 @@ FoamFile
         sampleRegion    sphere;
         samplePatch     sphere_to_gas;
     }
-    gas_to_box_xmin
+    gas_to_box_xmax
     {
         type            mappedWall;
         inGroups        2(wall mappedPatch);
         nFaces          400;
         startFace       22392;
         sampleMode      nearestPatchFace;
-        sampleRegion    box_xmin;
-        samplePatch     box_xmin_to_gas;
+        sampleRegion    box_xmax;
+        samplePatch     box_xmax_to_gas;
     }
 )
 

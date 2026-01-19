@@ -63,7 +63,7 @@ Geometry_Finale = geompy.MakePartition(objets_a_partitionner, [], [], [], geompy
 
 geompy.addToStudy(Geometry_Finale, 'DOMAINE_COMPLET')
 
-## 5. CREATION DES GROUPES (Version Corrigée pour Salome 9+)
+## 5. CREATION DES GROUPES 
 # =========================================================
 
 # Petite tolérance

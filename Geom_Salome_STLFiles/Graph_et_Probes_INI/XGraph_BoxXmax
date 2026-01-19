@@ -32,7 +32,7 @@ sets
 (
     line
     {
-        type    lineUniform;
+        type    uniform;
         axis    x;
         start   (X_START_BOXXMAX Y_CENTER Z_CENTER);
         end     (X_END_BOXXMAX Y_CENTER Z_CENTER);

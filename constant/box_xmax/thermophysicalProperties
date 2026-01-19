@@ -36,7 +36,7 @@ mixture
     }
     equationOfState
     {
-        rho             35;     // [kg/m^3] Densité mousse PU rigide (30-50 kg/m³ typique)
+        rho             50;     // [kg/m^3] Densité mousse PU rigide (30-50 kg/m³ typique)
     }
     transport
     {

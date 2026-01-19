@@ -33,7 +33,7 @@ sets
 (
     line
     {
-        type    lineUniform;
+        type    uniform;
         axis    x;
         start   (X_START_GAS Y_CENTER Z_CENTER);
         end     (X_END_GAS Y_CENTER Z_CENTER);
