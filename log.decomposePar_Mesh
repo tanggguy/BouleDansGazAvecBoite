@@ -9,9 +9,9 @@ Build  : _615aae61-20250627 OPENFOAM=2506 version=2506
 Arch   : "LSB;label=32;scalar=64"
 Exec   : decomposePar
 Date   : Jan 19 2026
-Time   : 15:50:57
+Time   : 16:23:01
 Host   : tanguy-VMware-Virtual-Platform
-PID    : 10641
+PID    : 11785
 I/O    : uncollated
 Case   : /home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite
 nProcs : 1
@@ -45,44 +45,48 @@ Constructing processor meshes
 
 Processor 0
     Number of cells = 3146
-    Number of points = 3864
-    Number of faces shared with processor 1 = 286
-    Number of faces shared with processor 3 = 242
-    Number of processor patches = 2
-    Number of processor faces = 528
+    Number of points = 3878
+    Number of faces shared with processor 1 = 312
+    Number of faces shared with processor 2 = 7
+    Number of faces shared with processor 3 = 235
+    Number of processor patches = 3
+    Number of processor faces = 554
     Number of boundary faces = 814
 
 Processor 1
     Number of cells = 3146
-    Number of points = 3864
-    Number of faces shared with processor 0 = 286
-    Number of faces shared with processor 2 = 242
-    Number of processor patches = 2
-    Number of processor faces = 528
+    Number of points = 3878
+    Number of faces shared with processor 0 = 312
+    Number of faces shared with processor 2 = 235
+    Number of faces shared with processor 3 = 7
+    Number of processor patches = 3
+    Number of processor faces = 554
     Number of boundary faces = 814
 
 Processor 2
     Number of cells = 3146
-    Number of points = 3864
-    Number of faces shared with processor 1 = 242
-    Number of faces shared with processor 3 = 286
-    Number of processor patches = 2
-    Number of processor faces = 528
-    Number of boundary faces = 814
+    Number of points = 3892
+    Number of faces shared with processor 0 = 7
+    Number of faces shared with processor 1 = 235
+    Number of faces shared with processor 3 = 325
+    Number of processor patches = 3
+    Number of processor faces = 567
+    Number of boundary faces = 827
 
 Processor 3
     Number of cells = 3146
-    Number of points = 3864
-    Number of faces shared with processor 0 = 242
-    Number of faces shared with processor 2 = 286
-    Number of processor patches = 2
-    Number of processor faces = 528
-    Number of boundary faces = 814
+    Number of points = 3878
+    Number of faces shared with processor 0 = 235
+    Number of faces shared with processor 1 = 7
+    Number of faces shared with processor 2 = 325
+    Number of processor patches = 3
+    Number of processor faces = 567
+    Number of boundary faces = 801
 
-Number of processor faces = 1056
+Number of processor faces = 1121
 Max number of cells = 3146 (0% above average 3146)
-Max number of processor patches = 2 (0% above average 2)
-Max number of faces between processors = 528 (0% above average 528)
+Max number of processor patches = 3 (0% above average 3)
+Max number of faces between processors = 567 (1.15968% above average 560.5)
 
 Time = 0
 

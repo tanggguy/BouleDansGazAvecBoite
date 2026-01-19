@@ -1,12 +1,12 @@
 # Wall heat-flux
 # Time        	patch         	min           	max           	integral      
-25            	external_box_xmax	-7.212386e+01	-7.079058e+01	-7.133490e-01
-50            	external_box_xmax	-4.906092e+01	-4.735682e+01	-4.774918e-01
-75            	external_box_xmax	-3.816780e+01	-3.634517e+01	-3.710917e-01
-100           	external_box_xmax	-3.243756e+01	-3.000905e+01	-3.132087e-01
-125           	external_box_xmax	-2.907678e+01	-2.587669e+01	-2.781541e-01
-150           	external_box_xmax	-2.713737e+01	-2.290306e+01	-2.555074e-01
-175           	external_box_xmax	-2.592831e+01	-2.076024e+01	-2.399624e-01
-200           	external_box_xmax	-2.521561e+01	-1.925664e+01	-2.298029e-01
-225           	external_box_xmax	-2.479615e+01	-1.821939e+01	-2.234754e-01
-250           	external_box_xmax	-2.455575e+01	-1.753122e+01	-2.193489e-01
+25            	external_box_xmax	-7.212478e+01	-7.078600e+01	-7.132958e-01
+50            	external_box_xmax	-4.909436e+01	-4.734857e+01	-4.775182e-01
+75            	external_box_xmax	-3.820318e+01	-3.634568e+01	-3.714952e-01
+100           	external_box_xmax	-3.241923e+01	-3.009018e+01	-3.139965e-01
+125           	external_box_xmax	-2.911752e+01	-2.594476e+01	-2.788594e-01
+150           	external_box_xmax	-2.726349e+01	-2.300049e+01	-2.563165e-01
+175           	external_box_xmax	-2.607626e+01	-2.093819e+01	-2.414263e-01
+200           	external_box_xmax	-2.542734e+01	-1.946971e+01	-2.316316e-01
+225           	external_box_xmax	-2.497143e+01	-1.839284e+01	-2.250069e-01
+250           	external_box_xmax	-2.470198e+01	-1.763832e+01	-2.207733e-01

@@ -1,0 +1,12 @@
+# Wall heat-flux
+# Time        	patch         	min           	max           	integral      
+25            	external_box_xmin	7.079013e+01	7.212167e+01	7.133157e-01
+50            	external_box_xmin	4.744827e+01	4.902762e+01	4.775674e-01
+75            	external_box_xmin	3.658284e+01	3.815184e+01	3.715540e-01
+100           	external_box_xmin	3.027120e+01	3.245798e+01	3.141992e-01
+125           	external_box_xmin	2.605922e+01	2.922978e+01	2.792106e-01
+150           	external_box_xmin	2.306462e+01	2.749673e+01	2.567753e-01
+175           	external_box_xmin	2.095214e+01	2.649453e+01	2.419471e-01
+200           	external_box_xmin	1.931740e+01	2.596397e+01	2.320381e-01
+225           	external_box_xmin	1.813961e+01	2.568836e+01	2.253527e-01
+250           	external_box_xmin	1.737154e+01	2.555917e+01	2.210167e-01

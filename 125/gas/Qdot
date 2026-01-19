@@ -32,12 +32,12 @@ boundaryField
         type            calculated;
         value           uniform 0;
     }
-    gas_to_sphere
+    gas_to_box_xmax
     {
         type            calculated;
         value           uniform 0;
     }
-    gas_to_box_xmax
+    gas_to_sphere
     {
         type            calculated;
         value           uniform 0;

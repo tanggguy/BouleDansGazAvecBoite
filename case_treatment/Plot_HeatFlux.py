@@ -90,11 +90,11 @@ all_flux_data = {}
 for surface_name, config in FLUX_SURFACES.items():
     # Le chemin dépend de la région
     if 'box_xmin' in surface_name:
-        path = f"postProcessing/{surface_name}/box_xmin"
+        path = f"postProcessing/box_xmin/{surface_name}"
     elif 'box_xmax' in surface_name:
-        path = f"postProcessing/{surface_name}/box_xmax"
+        path = f"postProcessing/box_xmax/{surface_name}"
     elif 'gas_to_sphere' in surface_name:
-        path = f"postProcessing/{surface_name}/gas"
+        path = f"postProcessing/gas/{surface_name}"
     else:
         path = f"postProcessing/{surface_name}"
     

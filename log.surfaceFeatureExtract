@@ -9,9 +9,9 @@ Build  : _615aae61-20250627 OPENFOAM=2506 version=2506
 Arch   : "LSB;label=32;scalar=64"
 Exec   : surfaceFeatureExtract
 Date   : Jan 19 2026
-Time   : 15:50:57
+Time   : 16:23:01
 Host   : tanguy-VMware-Virtual-Platform
-PID    : 10640
+PID    : 11784
 I/O    : uncollated
 Case   : /home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite
 nProcs : 1
@@ -339,7 +339,7 @@ Writing 4 region edges to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAv
 Writing 4 edge directions to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/extendedFeatureEdgeMesh/external_box_xmax_edgeDirections.obj"
 
 Writing featureEdgeMesh to "/home/tanguy/OpenFOAM/tanguy-v2506/run/BouleDansGazAvecBoite/constant/triSurface/external_box_xmax.eMesh"
-ExecutionTime = 0.11 s  ClockTime = 0 s
+ExecutionTime = 0.14 s  ClockTime = 0 s
 
 End
 

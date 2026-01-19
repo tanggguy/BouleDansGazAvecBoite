@@ -19,25 +19,25 @@ import numpy as np
 # Régions et leurs configurations
 REGIONS = {
     'gas': {
-        'path': 'postProcessing/gas_residuals/gas',
+        'path': 'postProcessing/gas/gas_residuals',
         'title': 'Résidus - Région Gas (fluide)',
         'fields': ['Ux', 'Uy', 'Uz', 'h', 'p_rgh'],  # Champs attendus pour un fluide
         'solid': False
     },
     'sphere': {
-        'path': 'postProcessing/sphere_residuals/sphere',
+        'path': 'postProcessing/sphere/sphere_residuals',
         'title': 'Résidus - Région Sphere (solide)',
         'fields': ['h'],  # Champs attendus pour un solide
         'solid': True
     },
     'box_xmin': {
-        'path': 'postProcessing/box_xmin_residuals/box_xmin',
+        'path': 'postProcessing/box_xmin/box_xmin_residuals',
         'title': 'Résidus - Région Box Xmin (solide)',
         'fields': ['h'],
         'solid': True
     },
     'box_xmax': {
-        'path': 'postProcessing/box_xmax_residuals/box_xmax',
+        'path': 'postProcessing/box_xmax/box_xmax_residuals',
         'title': 'Résidus - Région Box Xmax (solide)',
         'fields': ['h'],
         'solid': True

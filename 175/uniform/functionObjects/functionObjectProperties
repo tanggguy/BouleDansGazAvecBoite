@@ -22,16 +22,16 @@ cdf7e925f5746741c316f5fbcf39ad0dfca90775
     {
         scalar
         {
-            Ux_initial      0.839064;
-            Ux_final        0.0812348;
-            Uy_initial      0.902518;
-            Uy_final        0.0686292;
-            Uz_initial      0.887435;
-            Uz_final        0.0104278;
-            h_initial       0.0199698;
-            h_final         0.00158788;
-            p_rgh_initial   0.857481;
-            p_rgh_final     0.0230785;
+            Ux_initial      0.774088;
+            Ux_final        0.0512708;
+            Uy_initial      0.8471610000000001;
+            Uy_final        0.07127989999999999;
+            Uz_initial      0.812929;
+            Uz_final        0.0714612;
+            h_initial       0.0170348;
+            h_final         0.00166488;
+            p_rgh_initial   0.822897;
+            p_rgh_final     0.0259721;
             rho_initial     0;
             rho_final       0;
         }
@@ -41,7 +41,7 @@ cdf7e925f5746741c316f5fbcf39ad0dfca90775
             Uy_iters        1;
             Uz_iters        1;
             h_iters         1;
-            p_rgh_iters     4;
+            p_rgh_iters     3;
             rho_iters       0;
         }
     }
@@ -49,20 +49,20 @@ cdf7e925f5746741c316f5fbcf39ad0dfca90775
     {
         scalar
         {
-            h_initial       0.000932799;
-            h_final         1.75866e-09;
+            h_initial       0.000816423;
+            h_final         9.49824e-07;
         }
         label
         {
-            h_iters         2;
+            h_iters         1;
         }
     }
     box_xmin_residuals
     {
         scalar
         {
-            h_initial       0.000263502;
-            h_final         1.58947e-07;
+            h_initial       0.000148807;
+            h_final         5.91097e-08;
         }
         label
         {
@@ -73,8 +73,8 @@ cdf7e925f5746741c316f5fbcf39ad0dfca90775
     {
         scalar
         {
-            h_initial       0.000218508;
-            h_final         9.487300000000001e-08;
+            h_initial       0.000125687;
+            h_final         5.72116e-08;
         }
         label
         {
@@ -85,9 +85,9 @@ cdf7e925f5746741c316f5fbcf39ad0dfca90775
     {
         scalar
         {
-            average(T)      285.7986806496035;
-            min(T)          285.6483040778421;
-            max(T)          285.959195744096;
+            average(T)      285.6753368752409;
+            min(T)          285.3636716083969;
+            max(T)          286.0069601888005;
         }
         label
         {
@@ -98,9 +98,9 @@ cdf7e925f5746741c316f5fbcf39ad0dfca90775
     {
         scalar
         {
-            average(T)      286.5603466375542;
-            min(T)          285.9666855344574;
-            max(T)          287.1540077406511;
+            average(T)      286.0911822849032;
+            min(T)          285.6651824184827;
+            max(T)          286.5171821513236;
         }
         label
         {
@@ -111,12 +111,12 @@ cdf7e925f5746741c316f5fbcf39ad0dfca90775
     {
         scalar
         {
-            average(line,T) 285.7006516145341;
-            min(line,T)     285.6530636396263;
-            max(line,T)     285.9469844379794;
-            average(T)      285.7006516145341;
-            min(T)          285.6530636396263;
-            max(T)          285.9469844379794;
+            average(line,T) 285.6570938400195;
+            min(line,T)     285.3833470628911;
+            max(line,T)     285.9690406623824;
+            average(T)      285.6570938400195;
+            min(T)          285.3833470628911;
+            max(T)          285.9690406623824;
         }
         label
         {
@@ -128,29 +128,29 @@ cdf7e925f5746741c316f5fbcf39ad0dfca90775
     {
         scalar
         {
-            average(line,T) 286.7433989856542;
-            min(line,T)     285.0904868579692;
-            max(line,T)     289.8063872819807;
-            average(T)      286.7433989856542;
-            min(T)          285.0904868579692;
-            max(T)          289.8063872819807;
+            average(line,T) 285.6968230861361;
+            min(line,T)     282.5002237187803;
+            max(line,T)     289.0960800143131;
+            average(T)      285.6968230861361;
+            min(T)          282.5002237187803;
+            max(T)          289.0960800143131;
         }
         label
         {
-            size(line,T)    35;
-            size(T)         35;
+            size(line,T)    40;
+            size(T)         40;
         }
     }
     XGraph_BoxXmin
     {
         scalar
         {
-            average(line,T) 293.7432484236875;
-            min(line,T)     289.9528081030067;
-            max(line,T)     298.0552510036457;
-            average(T)      293.7432484236875;
-            min(T)          289.9528081030067;
-            max(T)          298.0552510036457;
+            average(line,T) 293.4992143177584;
+            min(line,T)     289.235974368417;
+            max(line,T)     298.0532961970706;
+            average(T)      293.4992143177584;
+            min(T)          289.235974368417;
+            max(T)          298.0532961970706;
         }
         label
         {
@@ -162,44 +162,44 @@ cdf7e925f5746741c316f5fbcf39ad0dfca90775
     {
         scalar
         {
-            average(line,T) 277.8036338374851;
-            min(line,T)     273.2461876404535;
-            max(line,T)     282.1154045175366;
-            average(T)      277.8036338374851;
-            min(T)          273.2461876404535;
-            max(T)          282.1154045175366;
+            average(line,T) 0;
+            min(line,T)     1e+300;
+            max(line,T)     -1e+300;
+            average(T)      0;
+            min(T)          1e+300;
+            max(T)          -1e+300;
         }
         label
         {
-            size(line,T)    20;
-            size(T)         20;
+            size(line,T)    0;
+            size(T)         0;
         }
     }
     HeatFlux_box_xmin_external
     {
         scalar
         {
-            min(external_box_xmin) 21.61252771742666;
-            max(external_box_xmin) 26.46972912981679;
-            int(external_box_xmin) 0.2409208190298637;
+            min(external_box_xmin) 20.95214359202244;
+            max(external_box_xmin) 26.49452551863855;
+            int(external_box_xmin) 0.2419471191792095;
         }
     }
     HeatFlux_box_xmax_external
     {
         scalar
         {
-            min(external_box_xmax) -25.92831012518102;
-            max(external_box_xmax) -20.76023880866664;
-            int(external_box_xmax) -0.2399623967329942;
+            min(external_box_xmax) -26.076264987446;
+            max(external_box_xmax) -20.93818562065003;
+            int(external_box_xmax) -0.2414262809947913;
         }
     }
     HeatFlux_gas_to_sphere
     {
         scalar
         {
-            min(gas_to_sphere) -4.784872259617639;
-            max(gas_to_sphere) 3.956222156743143;
-            int(gas_to_sphere) 0.001716518524400777;
+            min(gas_to_sphere) -5.73381224576557;
+            max(gas_to_sphere) 6.010308550740199;
+            int(gas_to_sphere) 0.01209093179073232;
         }
     }
 }
